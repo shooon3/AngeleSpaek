@@ -16,12 +16,14 @@ public class Main : MonoBehaviour {
         //指を離すとセリフ発射
         if (Input.GetButtonUp("Fire1")){
             ShotF = false;
+            Massage.IsFreeze = false;//フリーズ解除
             Player.Shot();
         }
 
         //ロングタップ開始時角度変更を止める
         if (Input.GetButtonDown("Fire1")){
             ShotF = true;
+            Massage.IsFreeze = true;//フリーズ
             Player.MassageSet();
         }
 

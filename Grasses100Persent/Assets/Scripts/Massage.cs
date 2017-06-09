@@ -14,7 +14,7 @@ public class Massage : MonoBehaviour {
     //速度一覧
     private class Speed{
         public const float Slow  = 0.0f;
-        public const float Nomal = 1.0f;
+        public const float Nomal = 0.5f;
         public const float Fast  = 0.0f;
     }
 
@@ -25,6 +25,9 @@ public class Massage : MonoBehaviour {
         public const float Big = 0.0f;
     }
 
+    private static List<Massage> InstanceMassage = new List<Massage>();
+    private static List<Vector2> IMSpeed = new List<Vector2>();
+
     //セリフ一覧
     public string[] TalkMassage = new string[] {
         "遊園地",
@@ -32,17 +35,42 @@ public class Massage : MonoBehaviour {
         "",
     };
 
+    //停止用フラグ
+    public static bool IsFreeze {
+        set{
+            for (int i = 0; i < InstanceMassage.Count; i++){
+                if (value){
+                    IMSpeed.Add(InstanceMassage[i].RB.velocity);//速度保存
+                    InstanceMassage[i].RB.velocity = Vector2.zero;//停止
+                }
+                else{
+                    InstanceMassage[i].RB.velocity = IMSpeed[i];//速度登録
+                }
+            }
+            
+            //リストリセット
+            if (!value){
+                IMSpeed.Clear();
+            }
+            //IsFreeze = value;//フリーズ判定
+        }
+    }
+
     //スプライト
     public Sprite[] MassageSprite = new Sprite[3];
 
     //ステータス
-    Vector3 GirlPos;
+    Vector2 GirlPos;
     SpriteRenderer SR;
-    Rigidbody2D RB;
+    public Rigidbody2D RB;
 
     private void Start(){
         RB = this.gameObject.GetComponent<Rigidbody2D>();//RigidBody取得
         SR = this.gameObject.GetComponent<SpriteRenderer>();//SpriteRenderer取得
+
+        //リストに追加
+        InstanceMassage.Add(this);
+        Debug.Log(InstanceMassage);
 
         //ステータス初期化
         //SR.sprite = //サイズ：普通
@@ -57,6 +85,8 @@ public class Massage : MonoBehaviour {
                 //メッセージにセリフの種類を判定するステータスを設定。
                 //ステータスを引数に渡してMassageActionを呼び出す
                 //MassageAction();
+                InstanceMassage.Remove(this);
+                Destroy(this.gameObject);
                 break;
             case TagName.Girl:
                 Destroy(this.gameObject);
@@ -75,6 +105,7 @@ public class Massage : MonoBehaviour {
 
         switch (MassageKind){
             case "Break":
+                InstanceMassage.Remove(this);//リスト解除
                 Destroy(this.gameObject);
                 break;
             case "Bigger":
