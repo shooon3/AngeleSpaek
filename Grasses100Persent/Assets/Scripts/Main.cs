@@ -8,9 +8,10 @@ public class Main : MonoBehaviour {
 
     //各種スクリプト
     public Player Player;
-  
+    public Enemy Enemy;
 
-	void Update () {
+
+    void Update () {
 
         //指を離すとセリフ発射
         if (Input.GetButtonUp("Fire1")){
@@ -29,6 +30,7 @@ public class Main : MonoBehaviour {
         }
         else{
             Player.DegChanger();
+            Enemy.IsShot();
         }
 
       
