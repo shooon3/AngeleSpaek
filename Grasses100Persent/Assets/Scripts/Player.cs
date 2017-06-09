@@ -6,13 +6,14 @@ public class Player : MonoBehaviour {
 
     //メッセージ変更用変数
     private float ShotPow;//セリフ変更判定用変数
-    private float AddPow;//判定用変数変化量
-    private float SmolerPow;//判定：ちいさくなーれ
-    private float BiggerPow;//判定：おおきくなーれ
+    public float AddPow;//判定用変数変化量
+    private float MaxPow = 100;//範囲最大
+    private float MinPow = 0;//範囲最小
+    public float SmolerPow;//判定：ちいさくなーれ
+    public float BiggerPow;//判定：おおきくなーれ
 
     private string[] MassageText = { "ちいさくなーれ", "こわれろー", "おおきくなーれ" };
     private string ShotMassageText;//発射するメッセージ
-
 
     //発射角
     private float ShotDeg;//発射角
@@ -26,6 +27,8 @@ public class Player : MonoBehaviour {
     //ゲームオブジェクト
     public GameObject MassagePre;//セリフプレファブ
     private GameObject Massage;//セリフ
+
+    private MassageStatus MS;//セリフステータス
 
     public Sprite SmollerMassage;//ちいさくなーれ
     public Sprite BreakMassge;//こわれろー
@@ -53,31 +56,41 @@ public class Player : MonoBehaviour {
     //セリフ配置メソッド
     public void MassageSet(){
         Massage = Instantiate(MassagePre,transform.position,Quaternion.identity) as GameObject;//セリフを生成
+        MS = Massage.GetComponent<MassageStatus>();
         Debug.Log("セリフを配置しました。");
     }
 
     //セリフ変更メソッド
     public void MassageChange(){
+        //範囲外
+        if(ShotPow < MinPow||ShotPow > MaxPow){
+            AddPow = -AddPow;
+        }
+
         ShotPow += AddPow;//パワー加算
 
         //ShotPowの値でメッセージ変更
-        int index = 2;
         if(ShotPow < SmolerPow){//基準値以下
-            index = 1;
+            MS.Janle = MassageStatus.PMJanle.Smoler;
         }
         else if(ShotPow > BiggerPow){//基準値以上
-            index = 3;
+            MS.Janle = MassageStatus.PMJanle.Bigger;
         }
-        //ShotMassageText = MassageText[index];
-        //現在のセリフの種類によって大きさを変更
-        //現在のセリフの種類によってテキストを変更
+        else{
+            MS.Janle = MassageStatus.PMJanle.Berak;
+        }
 
-        Debug.Log("セリフを変更しています。");
-        Debug.Log(string.Format("発射するセリフ：{0}", ShotMassageText));
+        Massage.GetComponent<MassageStatus>().Changer();
     }
 
     //セリフ発射メソッド
     public void Shot(){
+        //ShotPowリセット
+        ShotPow = 0;
+        if(AddPow < 0){
+            AddPow = -AddPow;
+        }
+
         //インスタンス化されたセリフにAddForceする。
         float ShotRad = ShotDeg * Mathf.Deg2Rad;//ラジアン変換
         Vector2 ShotVec = new Vector2(Mathf.Cos(ShotRad), Mathf.Sin(ShotRad));//角度計算

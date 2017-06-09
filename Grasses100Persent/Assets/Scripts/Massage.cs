@@ -70,25 +70,22 @@ public class Massage : MonoBehaviour {
 
         //リストに追加
         InstanceMassage.Add(this);
-        Debug.Log(InstanceMassage);
 
         //ステータス初期化
         //SR.sprite = //サイズ：普通
         GirlPos = GameObject.FindWithTag("Girl").transform.position - transform.position;//Girlの方向を取得
         RB.velocity = GirlPos * Speed.Nomal;//取得した方向をVelocityへ加算
-        Debug.Log("MoveToGirl");
     }
 
     private void OnTriggerEnter2D(Collider2D collision){
         switch (collision.tag){
             case TagName.Massage:
-                //メッセージにセリフの種類を判定するステータスを設定。
                 //ステータスを引数に渡してMassageActionを呼び出す
-                //MassageAction();
-                InstanceMassage.Remove(this);
-                Destroy(this.gameObject);
+
+                MassageAction(collision.GetComponent<MassageStatus>().Janle);
                 break;
             case TagName.Girl:
+                InstanceMassage.Remove(this);
                 Destroy(this.gameObject);
                 //評価を変更したりするメソッド呼び出し
                 break;
@@ -98,22 +95,22 @@ public class Massage : MonoBehaviour {
     }
 
     //セリフ接触時アクション
-    private void MassageAction(string MassageKind){
+    private void MassageAction(MassageStatus.PMJanle MS){
 
         Sprite ChangeSprite = new Sprite();//変更先Sprite
         float ChangeSpeed = new float();//変更先Sprite
 
-        switch (MassageKind){
-            case "Break":
+        switch (MS){
+            case MassageStatus.PMJanle.Berak:
                 InstanceMassage.Remove(this);//リスト解除
                 Destroy(this.gameObject);
                 break;
-            case "Bigger":
+            case MassageStatus.PMJanle.Bigger:
                 //変更するコライダーの大きさ決定
                 //変更するスプライト決定
                 ChangeSpeed = Speed.Fast;//変更するスピード決定
                 break;
-            case "Smoler":
+            case MassageStatus.PMJanle.Smoler:
                 //変更するコライダーの大きさ決定
                 //変更するスプライト決定
                 ChangeSpeed = Speed.Slow;
@@ -121,7 +118,7 @@ public class Massage : MonoBehaviour {
             default:
                 break;
         }
-        SR.sprite = ChangeSprite;//スプライト変更
+        //SR.sprite = ChangeSprite;//スプライト変更
         RB.velocity = GirlPos * ChangeSpeed;//スピード変更
     }
 }

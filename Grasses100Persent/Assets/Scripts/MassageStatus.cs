@@ -15,22 +15,24 @@ public class MassageStatus : MonoBehaviour {
         public const string Smoler = "ちいさくなーれ";
     }
     private string Text;
+    private TextMesh TM;
 
     //スプライト
     public Sprite Nomale;//こわれろー
     public Sprite Big;//おおきくなーれ
     public Sprite Smole;//ちいさくなーれ
     private Sprite Sprite;
+    private SpriteRenderer SR;
 
 
-    private void Start(){
-        Sprite = GetComponent<SpriteRenderer>().sprite;
-        Text = GetComponentInChildren<TextMesh>().text;
+    private void Awake(){
+        SR = GetComponent<SpriteRenderer>();
+        TM = GetComponentInChildren<TextMesh>();
     }
 
-    private void Update(){
-        //Janleによってテキスト・スプライトを変更
-        switch (Janle) {
+    public void Changer(){
+        //切替準備
+        switch (Janle){
             case PMJanle.Berak:
                 Sprite = Nomale;
                 Text = MassageText.Break;
@@ -44,7 +46,32 @@ public class MassageStatus : MonoBehaviour {
                 Text = MassageText.Bigger;
                 break;
             default:
+                Text = MassageText.Break;
                 break;
         }
+
+        //表示切替
+        //SR.sprite = Sprite;
+        TM.text = Text;
     }
+
+    //private void Update(){
+    //    //Janleによってテキスト・スプライトを変更
+    //    switch (Janle) {
+    //        case PMJanle.Berak:
+    //            Sprite = Nomale;
+    //            Text = MassageText.Break;
+    //            break;
+    //        case PMJanle.Smoler:
+    //            Sprite = Smole;
+    //            Text = MassageText.Smoler;
+    //            break;
+    //        case PMJanle.Bigger:
+    //            Sprite = Big;
+    //            Text = MassageText.Bigger;
+    //            break;
+    //        default:
+    //            break;
+    //    }
+    //}
 }
