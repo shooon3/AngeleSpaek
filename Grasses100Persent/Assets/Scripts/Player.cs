@@ -48,9 +48,6 @@ public class Player : MonoBehaviour {
 
         //キャラクターの角度を変更
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, ShotDeg));
-
-        Debug.Log("発射角を変更しています。");
-        Debug.Log(string.Format("発射角：{0}",ShotDeg));
     }
 
     //セリフ配置メソッド

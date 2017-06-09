@@ -14,7 +14,7 @@ public class Massage : MonoBehaviour {
     //速度一覧
     private class Speed{
         public const float Slow  = 0.0f;
-        public const float Nomal = 0.0f;
+        public const float Nomal = 1.0f;
         public const float Fast  = 0.0f;
     }
 
@@ -48,6 +48,7 @@ public class Massage : MonoBehaviour {
         //SR.sprite = //サイズ：普通
         GirlPos = GameObject.FindWithTag("Girl").transform.position - transform.position;//Girlの方向を取得
         RB.velocity = GirlPos * Speed.Nomal;//取得した方向をVelocityへ加算
+        Debug.Log("MoveToGirl");
     }
 
     private void OnTriggerEnter2D(Collider2D collision){
