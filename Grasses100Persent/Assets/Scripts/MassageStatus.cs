@@ -24,10 +24,37 @@ public class MassageStatus : MonoBehaviour {
     private Sprite Sprite;
     private SpriteRenderer SR;
 
+    //リスト
+    public static List<MassageStatus> InstanceMassage = new List<MassageStatus>();//生成済みセリフ
+    private static List<Vector2> IMSpeed = new List<Vector2>();//セリフスピード
+
+    private Rigidbody2D RB2D;
+
+    public static bool IsFreeze{
+        set{
+            for (int i = 0; i < InstanceMassage.Count; i++){
+                //フリーズさせる
+                if (value){
+                    IMSpeed.Add(InstanceMassage[i].RB2D.velocity);//速度保存
+                    InstanceMassage[i].RB2D.velocity = Vector2.zero;//フリーズ
+                }
+                //動き出す
+                else {
+                    InstanceMassage[i].RB2D.velocity = IMSpeed[i];
+                }
+            }
+
+            //リストクリア
+            if (!value){
+                IMSpeed.Clear();
+            }
+        }
+    }
 
     private void Awake(){
         SR = GetComponent<SpriteRenderer>();
         TM = GetComponentInChildren<TextMesh>();
+        RB2D = GetComponent<Rigidbody2D>();
     }
 
     public void Changer(){

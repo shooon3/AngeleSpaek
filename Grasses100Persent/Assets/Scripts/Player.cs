@@ -95,7 +95,7 @@ public class Player : MonoBehaviour {
         float ShotRad = ShotDeg * Mathf.Deg2Rad;//ラジアン変換
         Vector2 ShotVec = new Vector2(Mathf.Cos(ShotRad), Mathf.Sin(ShotRad));//角度計算
         Massage.GetComponent<Rigidbody2D>().velocity = ShotVec * ShotSpeed;
-        Debug.Log("セリフを発射します。");
+        MassageStatus.InstanceMassage.Add(Massage.GetComponent<MassageStatus>());
         //発射後、弾がずれるところは止まることで解決
     }
 }
