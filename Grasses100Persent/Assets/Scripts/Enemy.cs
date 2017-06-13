@@ -24,7 +24,6 @@ public class Enemy : MonoBehaviour{
     private void Shot()
     {
         ENMassage = Instantiate(ENMassagePre, transform.position, Quaternion.identity) as GameObject;//セリフを生成
-        Debug.Log("敵がセリフを配置しました。");
     }
 
 }

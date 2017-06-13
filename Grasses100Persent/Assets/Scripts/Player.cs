@@ -72,8 +72,7 @@ public class Player : MonoBehaviour {
         //現在のセリフの種類によって大きさを変更
         //現在のセリフの種類によってテキストを変更
 
-        Debug.Log("セリフを変更しています。");
-        Debug.Log(string.Format("発射するセリフ：{0}", ShotMassageText));
+        //Debug.Log(string.Format("発射するセリフ：{0}", ShotMassageText));
     }
 
     //セリフ発射メソッド

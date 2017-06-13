@@ -25,8 +25,9 @@ public class Massage : MonoBehaviour {
         public const float Big = 0.0f;
     }
 
-    private static List<Massage> InstanceMassage = new List<Massage>();
-    private static List<Vector2> IMSpeed = new List<Vector2>();
+    //リスト
+    private static List<Massage> InstanceMassage = new List<Massage>();//生成済みセリフ
+    private static List<Vector2> IMSpeed = new List<Vector2>();//セリフスピード
 
     //セリフ一覧
     public string[] TalkMassage = new string[] {
@@ -70,13 +71,11 @@ public class Massage : MonoBehaviour {
 
         //リストに追加
         InstanceMassage.Add(this);
-        Debug.Log(InstanceMassage);
 
         //ステータス初期化
         //SR.sprite = //サイズ：普通
         GirlPos = GameObject.FindWithTag("Girl").transform.position - transform.position;//Girlの方向を取得
         RB.velocity = GirlPos * Speed.Nomal;//取得した方向をVelocityへ加算
-        Debug.Log("MoveToGirl");
     }
 
     private void OnTriggerEnter2D(Collider2D collision){
