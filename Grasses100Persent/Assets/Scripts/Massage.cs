@@ -14,7 +14,7 @@ public class Massage : MonoBehaviour {
     //速度一覧
     private class Speed{
         public const float Slow  = 0.0f;
-        public const float Nomal = 0.5f;
+        public const float Nomal = 0.1f;
         public const float Fast  = 0.0f;
     }
 

@@ -98,4 +98,5 @@ public class Player : MonoBehaviour {
         MassageStatus.InstanceMassage.Add(Massage.GetComponent<MassageStatus>());
         //発射後、弾がずれるところは止まることで解決
     }
+
 }
