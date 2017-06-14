@@ -82,7 +82,7 @@ public class Massage : MonoBehaviour {
             case TagName.Massage:
                 //ステータスを引数に渡してMassageActionを呼び出す
 
-                MassageAction(collision.GetComponent<MassageStatus>().Janle);
+                MassageAction(collision.GetComponent<MassageStatus>().Janle,collision);
                 break;
             case TagName.Girl:
                 InstanceMassage.Remove(this);
@@ -95,13 +95,15 @@ public class Massage : MonoBehaviour {
     }
 
     //セリフ接触時アクション
-    private void MassageAction(MassageStatus.PMJanle MS){
+    private void MassageAction(MassageStatus.PMJanle MS,Collider2D collision){
 
         Sprite ChangeSprite = new Sprite();//変更先Sprite
         float ChangeSpeed = new float();//変更先Sprite
 
         switch (MS){
             case MassageStatus.PMJanle.Berak:
+                MassageStatus.InstanceMassage.Remove(collision.GetComponent<MassageStatus>());
+                Destroy(collision.gameObject);
                 InstanceMassage.Remove(this);//リスト解除
                 Destroy(this.gameObject);
                 break;
