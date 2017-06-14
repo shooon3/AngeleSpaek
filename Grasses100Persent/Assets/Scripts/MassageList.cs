@@ -5,6 +5,8 @@ using UnityEngine;
 public static class MassageList{
     public enum MassageJanle { plase, animal, food, hobby };
 
+    public static int[] UseMassage=new int[10];
+
     public static string[] Massage = {
         "動物園",
         "水族館",
