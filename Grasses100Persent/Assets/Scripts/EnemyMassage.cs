@@ -30,10 +30,11 @@ public class EnemyMassage : MonoBehaviour {
     public Sprite BigMassage = new Sprite();
 
     //ステータス
+    public int MassageNum;//セリフ
     Vector2 GirlPos;//移動先
     SpriteRenderer SR;//スプライト
     public Rigidbody2D RB;//リジッドボディ
-    public TextMesh Text;//セリフ
+    private TextMesh Text;//テキスト
 
     //紐づけスクリプト
     Girl Girl;
@@ -64,7 +65,7 @@ public class EnemyMassage : MonoBehaviour {
         switch (collision.tag){
             case TagName.Massage:
                 //衝突したセリフを破壊
-                PlayerMassage.InstanceMassage.Remove(collision.GetComponent<PlayerMassage>());
+                PlayerMassage.List.Remove(collision.GetComponent<PlayerMassage>());
                 Destroy(collision.gameObject);
 
                 //Janleによって処理変更
@@ -73,6 +74,7 @@ public class EnemyMassage : MonoBehaviour {
             case TagName.Girl:
                 InstanceMassage.Remove(this);
                 Destroy(this.gameObject);
+                Girl.Rated(MassageNum);
                 break;
             default:
                 break;
@@ -133,6 +135,7 @@ public class EnemyMassage : MonoBehaviour {
     private void Awake(){
         RB = this.gameObject.GetComponent<Rigidbody2D>();//RigidBody取得
         SR = this.gameObject.GetComponent<SpriteRenderer>();//SpriteRenderer取得
+        Text = this.gameObject.transform.GetChild(0).GetComponent<TextMesh>();
 
         //リストに追加
         InstanceMassage.Add(this);
@@ -143,6 +146,14 @@ public class EnemyMassage : MonoBehaviour {
 
         //ステータス初期化
         NowSize = (Size)Random.Range(0,3);//声量をランダムに決定
+        while (true){
+            int index = Random.Range(0, MassageList.UseMassage.Length);
+            if(MassageList.UseMassage[MassageNum] != 0){
+                MassageNum = MassageList.UseMassage[index];
+                break;
+            }
+        }
+        Text.text = MassageList.Massage[MassageNum];//セリフをランダムに決定
         MassgeChanger();
 
     }

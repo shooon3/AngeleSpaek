@@ -5,9 +5,10 @@ using UnityEngine;
 public static class MassageList{
     public enum MassageJanle { plase, animal, food, hobby };
 
-    public static int[] UseMassage=new int[10];
+    public static int[] UseMassage=new int[10] {1,2,3,0,0,0,0,0,0,0, };
 
     public static string[] Massage = {
+        "",
         "動物園",
         "水族館",
         "遊園地",
@@ -40,6 +41,7 @@ public static class MassageList{
     };
 
     public static MassageJanle[] MJ ={
+        MassageJanle.plase,
         MassageJanle.plase,
         MassageJanle.plase,
         MassageJanle.plase,

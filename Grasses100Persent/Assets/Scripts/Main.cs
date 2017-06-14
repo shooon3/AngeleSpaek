@@ -9,6 +9,7 @@ public class Main : MonoBehaviour {
     //各種スクリプト
     public Player Player;
     public Enemy Enemy;
+    public Girl Girl;
 
 
     void Update () {
@@ -41,6 +42,7 @@ public class Main : MonoBehaviour {
         else{
             Player.DegChanger();
             Enemy.IsShot();
+            Girl.IsTalkTitleChange();
         }
 
       
