@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyMassage : MonoBehaviour {
-    //エネミーの発射するセリフ
-
     //タグ一覧
     private class TagName{
         public const string Massage   = "Massage";
@@ -13,30 +11,35 @@ public class EnemyMassage : MonoBehaviour {
 
     //速度一覧
     private class Speed{
-        public const float Slow  = 0.0f;
+        public const float Slow  = 0.05f;
         public const float Nomal = 0.1f;
-        public const float Fast  = 0.0f;
+        public const float Fast  = 0.2f;
     }
 
-    //コライダー大きさ一覧
-    private class ColliderSize{
-        public const float Smole = 0.0f;
-        public const float Nomal = 0.0f;
-        public const float Big = 0.0f;
-    }
+    //大きさ
+    private enum Size {Smole,Normal,Big };
+    private Size NowSize;
 
+    //リスト
     private static List<EnemyMassage> InstanceMassage = new List<EnemyMassage>();
     private static List<Vector2> IMSpeed = new List<Vector2>();
 
-    ////セリフ一覧
-    //public string[] TalkMassage = new string[] {
-    //    "遊園地",
-    //    "動物園",
-    //    "",
-    //};
+    //吹き出し
+    public Sprite SmoleMassage = new Sprite();
+    public Sprite NormalMassage = new Sprite();
+    public Sprite BigMassage = new Sprite();
 
-    //停止用フラグ
-    public static bool IsFreeze {
+    //ステータス
+    Vector2 GirlPos;//移動先
+    SpriteRenderer SR;//スプライト
+    public Rigidbody2D RB;//リジッドボディ
+    public TextMesh Text;//セリフ
+
+    //紐づけスクリプト
+    Girl Girl;
+
+    //停止メソッド
+    public static bool IsFreeze{
         set{
             for (int i = 0; i < InstanceMassage.Count; i++){
                 if (value){
@@ -47,38 +50,17 @@ public class EnemyMassage : MonoBehaviour {
                     InstanceMassage[i].RB.velocity = IMSpeed[i];//速度登録
                 }
             }
-            
+
             //リストリセット
             if (!value){
                 IMSpeed.Clear();
             }
-            //IsFreeze = value;//フリーズ判定
         }
     }
 
-    //スプライト
-    public Sprite[] MassageSprite = new Sprite[3];
-
-    //ステータス
-    Vector2 GirlPos;
-    SpriteRenderer SR;
-    public Rigidbody2D RB;
-
-    private void Start(){
-        RB = this.gameObject.GetComponent<Rigidbody2D>();//RigidBody取得
-        SR = this.gameObject.GetComponent<SpriteRenderer>();//SpriteRenderer取得
-
-        //リストに追加
-        InstanceMassage.Add(this);
-
-        //ステータス初期化
-        //SR.sprite = //サイズ：普通
-        GirlPos = GameObject.FindWithTag("Girl").transform.position - transform.position;//Girlの方向を取得
-        RB.velocity = GirlPos * Speed.Nomal;//取得した方向をVelocityへ加算
-    }
-
+    //衝突時処理
     private void OnTriggerEnter2D(Collider2D collision){
-
+        //衝突物によって処理変更
         switch (collision.tag){
             case TagName.Massage:
                 //衝突したセリフを破壊
@@ -91,7 +73,6 @@ public class EnemyMassage : MonoBehaviour {
             case TagName.Girl:
                 InstanceMassage.Remove(this);
                 Destroy(this.gameObject);
-                //評価を変更したりするメソッド呼び出し
                 break;
             default:
                 break;
@@ -100,30 +81,71 @@ public class EnemyMassage : MonoBehaviour {
 
     //セリフ接触時アクション
     private void MassageAction(PlayerMassage.PMJanle MS){
-
-        Sprite ChangeSprite = new Sprite();//変更先Sprite
-        float ChangeSpeed = new float();//変更先Sprite
-
         switch (MS){
             case PlayerMassage.PMJanle.Berak:
                 InstanceMassage.Remove(this);//リスト解除
                 Destroy(this.gameObject);
                 break;
             case PlayerMassage.PMJanle.Bigger:
-                //変更するコライダーの大きさ決定
-                //変更するスプライト決定
-                ChangeSpeed = Speed.Fast;//変更するスピード決定
+                //最大でなければ大きくする
+                if (NowSize != Size.Big) {
+                    NowSize++;
+                }
                 break;
             case PlayerMassage.PMJanle.Smoler:
-                //変更するコライダーの大きさ決定
-                //変更するスプライト決定
-                ChangeSpeed = Speed.Slow;
+                //最小でなければ小さくする
+                if (NowSize != Size.Smole){
+                    NowSize--;
+                }
                 break;
             default:
                 break;
         }
-        //SR.sprite = ChangeSprite;//スプライト変更
+        MassgeChanger();
+    }
+
+    private void MassgeChanger(){
+        Sprite ChangeSprite = new Sprite();//変更先Sprite
+        float ChangeSpeed = new float();//変更先速度
+
+        //声量判定
+        switch (NowSize){
+            case Size.Smole:
+                ChangeSprite = SmoleMassage;
+                ChangeSpeed = Speed.Slow;
+                break;
+            case Size.Normal:
+                ChangeSprite = NormalMassage;
+                ChangeSpeed = Speed.Nomal;
+                break;
+            case Size.Big:
+                ChangeSprite = BigMassage;
+                ChangeSpeed = Speed.Fast;
+                break;
+            default:
+                break;
+        }
+
+        //SR.sprite = ChangeSprite;//吹き出し変更
         RB.velocity = GirlPos * ChangeSpeed;//スピード変更
     }
+
+    private void Awake(){
+        RB = this.gameObject.GetComponent<Rigidbody2D>();//RigidBody取得
+        SR = this.gameObject.GetComponent<SpriteRenderer>();//SpriteRenderer取得
+
+        //リストに追加
+        InstanceMassage.Add(this);
+
+        //移動開始
+        GirlPos = GameObject.FindWithTag("Girl").transform.position - transform.position;//Girlの方向を取得
+        RB.velocity = GirlPos * Speed.Nomal;//取得した方向をVelocityへ加算
+
+        //ステータス初期化
+        NowSize = (Size)Random.Range(0,3);//声量をランダムに決定
+        MassgeChanger();
+
+    }
+
 }
 

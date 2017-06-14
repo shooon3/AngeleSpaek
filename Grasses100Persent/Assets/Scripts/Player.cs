@@ -58,7 +58,6 @@ public class Player : MonoBehaviour {
     public void MassageSet(){
         Massage = Instantiate(MassagePre,transform.position,Quaternion.identity) as GameObject;//セリフを生成
         PM = Massage.GetComponent<PlayerMassage>();
-        Debug.Log("セリフを配置しました。");
     }
 
     //セリフ変更メソッド
