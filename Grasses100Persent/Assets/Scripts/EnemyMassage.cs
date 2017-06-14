@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Massage : MonoBehaviour {
+public class EnemyMassage : MonoBehaviour {
     //エネミーの発射するセリフ
 
     //タグ一覧
@@ -25,15 +25,15 @@ public class Massage : MonoBehaviour {
         public const float Big = 0.0f;
     }
 
-    private static List<Massage> InstanceMassage = new List<Massage>();
+    private static List<EnemyMassage> InstanceMassage = new List<EnemyMassage>();
     private static List<Vector2> IMSpeed = new List<Vector2>();
 
-    //セリフ一覧
-    public string[] TalkMassage = new string[] {
-        "遊園地",
-        "動物園",
-        "",
-    };
+    ////セリフ一覧
+    //public string[] TalkMassage = new string[] {
+    //    "遊園地",
+    //    "動物園",
+    //    "",
+    //};
 
     //停止用フラグ
     public static bool IsFreeze {
@@ -82,11 +82,11 @@ public class Massage : MonoBehaviour {
         switch (collision.tag){
             case TagName.Massage:
                 //衝突したセリフを破壊
-                MassageStatus.InstanceMassage.Remove(collision.GetComponent<MassageStatus>());
+                PlayerMassage.InstanceMassage.Remove(collision.GetComponent<PlayerMassage>());
                 Destroy(collision.gameObject);
 
                 //Janleによって処理変更
-                MassageAction(collision.GetComponent<MassageStatus>().Janle);
+                MassageAction(collision.GetComponent<PlayerMassage>().Janle);
                 break;
             case TagName.Girl:
                 InstanceMassage.Remove(this);
@@ -99,22 +99,22 @@ public class Massage : MonoBehaviour {
     }
 
     //セリフ接触時アクション
-    private void MassageAction(MassageStatus.PMJanle MS){
+    private void MassageAction(PlayerMassage.PMJanle MS){
 
         Sprite ChangeSprite = new Sprite();//変更先Sprite
         float ChangeSpeed = new float();//変更先Sprite
 
         switch (MS){
-            case MassageStatus.PMJanle.Berak:
+            case PlayerMassage.PMJanle.Berak:
                 InstanceMassage.Remove(this);//リスト解除
                 Destroy(this.gameObject);
                 break;
-            case MassageStatus.PMJanle.Bigger:
+            case PlayerMassage.PMJanle.Bigger:
                 //変更するコライダーの大きさ決定
                 //変更するスプライト決定
                 ChangeSpeed = Speed.Fast;//変更するスピード決定
                 break;
-            case MassageStatus.PMJanle.Smoler:
+            case PlayerMassage.PMJanle.Smoler:
                 //変更するコライダーの大きさ決定
                 //変更するスプライト決定
                 ChangeSpeed = Speed.Slow;

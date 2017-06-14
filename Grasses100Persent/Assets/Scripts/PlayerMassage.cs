@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MassageStatus : MonoBehaviour {
+public class PlayerMassage : MonoBehaviour {
 
     public enum PMJanle{Berak,Bigger,Smoler};//プレイヤーの発射するセリフの種類
 
@@ -25,7 +25,7 @@ public class MassageStatus : MonoBehaviour {
     private SpriteRenderer SR;
 
     //リスト
-    public static List<MassageStatus> InstanceMassage = new List<MassageStatus>();//生成済みセリフ
+    public static List<PlayerMassage> InstanceMassage = new List<PlayerMassage>();//生成済みセリフ
     private static List<Vector2> IMSpeed = new List<Vector2>();//セリフスピード
 
     private Rigidbody2D RB2D;
@@ -82,23 +82,4 @@ public class MassageStatus : MonoBehaviour {
         TM.text = Text;
     }
 
-    //private void Update(){
-    //    //Janleによってテキスト・スプライトを変更
-    //    switch (Janle) {
-    //        case PMJanle.Berak:
-    //            Sprite = Nomale;
-    //            Text = MassageText.Break;
-    //            break;
-    //        case PMJanle.Smoler:
-    //            Sprite = Smole;
-    //            Text = MassageText.Smoler;
-    //            break;
-    //        case PMJanle.Bigger:
-    //            Sprite = Big;
-    //            Text = MassageText.Bigger;
-    //            break;
-    //        default:
-    //            break;
-    //    }
-    //}
 }

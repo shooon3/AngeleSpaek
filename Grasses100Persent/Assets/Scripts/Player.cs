@@ -28,7 +28,7 @@ public class Player : MonoBehaviour {
     public GameObject MassagePre;//セリフプレファブ
     private GameObject Massage;//セリフ
 
-    private MassageStatus MS;//セリフステータス
+    private PlayerMassage PM;//セリフステータス
 
     public Sprite SmollerMassage;//ちいさくなーれ
     public Sprite BreakMassge;//こわれろー
@@ -57,7 +57,7 @@ public class Player : MonoBehaviour {
     //セリフ配置メソッド
     public void MassageSet(){
         Massage = Instantiate(MassagePre,transform.position,Quaternion.identity) as GameObject;//セリフを生成
-        MS = Massage.GetComponent<MassageStatus>();
+        PM = Massage.GetComponent<PlayerMassage>();
         Debug.Log("セリフを配置しました。");
     }
 
@@ -72,16 +72,16 @@ public class Player : MonoBehaviour {
 
         //ShotPowの値でメッセージ変更
         if(ShotPow < SmolerPow){//基準値以下
-            MS.Janle = MassageStatus.PMJanle.Smoler;
+            PM.Janle = PlayerMassage.PMJanle.Smoler;
         }
         else if(ShotPow > BiggerPow){//基準値以上
-            MS.Janle = MassageStatus.PMJanle.Bigger;
+            PM.Janle = PlayerMassage.PMJanle.Bigger;
         }
         else{
-            MS.Janle = MassageStatus.PMJanle.Berak;
+            PM.Janle = PlayerMassage.PMJanle.Berak;
         }
 
-        Massage.GetComponent<MassageStatus>().Changer();
+        Massage.GetComponent<PlayerMassage>().Changer();
     }
 
     //セリフ発射メソッド
@@ -96,7 +96,7 @@ public class Player : MonoBehaviour {
         float ShotRad = ShotDeg * Mathf.Deg2Rad;//ラジアン変換
         Vector2 ShotVec = new Vector2(Mathf.Cos(ShotRad), Mathf.Sin(ShotRad));//角度計算
         Massage.GetComponent<Rigidbody2D>().velocity = ShotVec * ShotSpeed;
-        MassageStatus.InstanceMassage.Add(Massage.GetComponent<MassageStatus>());
+        PlayerMassage.InstanceMassage.Add(Massage.GetComponent<PlayerMassage>());
         //発射後、弾がずれるところは止まることで解決
     }
 

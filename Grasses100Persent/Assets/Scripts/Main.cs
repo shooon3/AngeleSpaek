@@ -18,8 +18,8 @@ public class Main : MonoBehaviour {
             ShotF = false;
 
             //フリーズ解除
-            MassageStatus.IsFreeze = false;
-            Massage.IsFreeze = false;
+            PlayerMassage.IsFreeze = false;
+            EnemyMassage.IsFreeze = false;
 
             Player.Shot();
         }
@@ -29,8 +29,8 @@ public class Main : MonoBehaviour {
             ShotF = true;
 
             //フリーズ
-            MassageStatus.IsFreeze = true;
-            Massage.IsFreeze = true;
+            PlayerMassage.IsFreeze = true;
+            EnemyMassage.IsFreeze = true;
 
             Player.MassageSet();
         }
