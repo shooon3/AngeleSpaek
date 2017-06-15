@@ -7,40 +7,36 @@ public class Player : MonoBehaviour {
     //メッセージ変更用変数
     private float ShotPow;//セリフ変更判定用変数
     public float AddPow;//判定用変数変化量
-    public float MaxPow;//範囲最大
-    private float MinPow = 0;//範囲最小
-    public float SmolerPow;//判定：ちいさくなーれ
-    public float BiggerPow;//判定：おおきくなーれ
-
-    ////セリフ
-    //private string[] MassageText = {
-    //    "ちいさくなーれ",
-    //    "こわれろー",
-    //    "おおきくなーれ"
-    //};//セリフ一覧
-    //private string ShotMassageText;//発射するメッセージ
+    private const float MaxPow = 90;//範囲最大
+    private const float SmolerPow = 30;//判定：ちいさくなーれ
+    private const float BiggerPow = 60;//判定：おおきくなーれ
 
     //発射角変更用変数
+    private bool IsAddDeg = true;//角度変更判定フラグ
     private float ShotDeg;//発射角
     public float AddDeg;//角度変化量
+    //以下２つ決定後定数化
     public float MaxDeg;//角度最大値
     public float MinDeg;//角度最小値
+    
+    public float ShotSpeed;//セリフ速度
 
-    ////セリフ速度
-    //public float ShotSpeed;
+    public float FreezeTime;//停止時間
 
     //吹き出し
     public GameObject MassagePre;//セリフプレファブ
-    private GameObject Massage;//セリフ
-
-    //private PlayerMassage PM;//セリフステータス
-
-    //public Sprite SmollerMassage;//ちいさくなーれ
-    //public Sprite BreakMassge;//こわれろー
-    //public Sprite BiggerMassage;//おおきくなーれ
+    private GameObject MassageObj;//セリフ
+    
+    //紐づけスクリプト
+    private PlayerMassage PM;
 
     //発射角変更メソッド
     public void DegChanger(){
+        //角度変更判定
+        if (!IsAddDeg){
+            return;
+        }
+
         //発射角が範囲を超えた場合加算量の符号を反転
         if(ShotDeg > MaxDeg){
             ShotDeg = MaxDeg;
@@ -61,56 +57,59 @@ public class Player : MonoBehaviour {
 
     //セリフ配置メソッド
     public void MassageSet(){
-        Massage = Instantiate(MassagePre,transform.position,Quaternion.identity) as GameObject;//吹き出しを生成
-        PM = Massage.GetComponent<PlayerMassage>();
+        //角度変更を止める
+        IsAddDeg = false;
+
+        MassageObj = Instantiate(MassagePre,transform.position,Quaternion.identity) as GameObject;//吹き出しを生成
+        PM = MassageObj.GetComponent<PlayerMassage>();//吹き出しを記憶
     }
 
     //セリフ変更メソッド
     public void MassageChange(){
-        //範囲外
-        if(ShotPow < MinPow||ShotPow > MaxPow){
-            AddPow = -AddPow;
+        //種類変更はループする
+        if(ShotPow > MaxPow){
+            ShotPow = 0;
         }
 
         ShotPow += AddPow;//パワー加算
 
-        //ShotPowの値で発射するセリフを決定
-        //PlayerMassageでセリフを変更するメソッドを作成
-        //決定した値を引数にメソッドを呼び出す
-        
-        //判定：ちいさくなれー
+        //ShotPowを判定
         if(ShotPow < SmolerPow){
-
+            //判定：ちいさくなれー
+            PM.ThisJanle = PlayerMassage.Janle.Smoler;
+        }
+        else if(ShotPow > BiggerPow){
+            //判定：おおきくなれ―
+            PM.ThisJanle = PlayerMassage.Janle.Smoler;
+        }
+        else{
+            //判定：こわれろー
+            PM.ThisJanle = PlayerMassage.Janle.Break;
         }
 
-        ////ShotPowの値でメッセージ変更
-        //if(ShotPow < SmolerPow){//基準値以下
-        //    PM.Janle = PlayerMassage.PMJanle.Smoler;
-        //}
-        //else if(ShotPow > BiggerPow){//基準値以上
-        //    PM.Janle = PlayerMassage.PMJanle.Bigger;
-        //}
-        //else{
-        //    PM.Janle = PlayerMassage.PMJanle.Berak;
-        //}
+        PM.TextChange();//テキスト更新
 
-        //Massage.GetComponent<PlayerMassage>().Changer();
     }
 
     //セリフ発射メソッド
     public void Shot(){
         //ShotPowリセット
         ShotPow = 0;
-        if(AddPow < 0){
-            AddPow = -AddPow;
-        }
 
-        //インスタンス化されたセリフにAddForceする。
+        //セリフ発射
         float ShotRad = ShotDeg * Mathf.Deg2Rad;//ラジアン変換
         Vector2 ShotVec = new Vector2(Mathf.Cos(ShotRad), Mathf.Sin(ShotRad));//角度計算
-        Massage.GetComponent<Rigidbody2D>().velocity = ShotVec * ShotSpeed;
-        PlayerMassage.List.Add(Massage.GetComponent<PlayerMassage>());
-        //発射後、弾がずれるところは止まることで解決
+        MassageObj.GetComponent<Rigidbody2D>().velocity = ShotVec * ShotSpeed;//加速
+        PlayerMassage.List.Add(MassageObj.GetComponent<PlayerMassage>());
+
+        //停止
+        StartCoroutine(ShotFreeze());
+    }
+
+    //停止メソッド
+    private IEnumerator ShotFreeze(){
+        yield return new WaitForSeconds(FreezeTime);
+        IsAddDeg = true;
     }
 
 }

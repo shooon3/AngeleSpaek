@@ -60,51 +60,51 @@ public class EnemyMassage : MonoBehaviour {
     }
 
     //衝突時処理
-    private void OnTriggerEnter2D(Collider2D collision){
-        //衝突物によって処理変更
-        switch (collision.tag){
-            case TagName.Massage:
-                //衝突したセリフを破壊
-                PlayerMassage.List.Remove(collision.GetComponent<PlayerMassage>());
-                Destroy(collision.gameObject);
+    //private void OnTriggerEnter2D(Collider2D collision){
+    //    //衝突物によって処理変更
+    //    switch (collision.tag){
+    //        case TagName.Massage:
+    //            //衝突したセリフを破壊
+    //            PlayerMassage.List.Remove(collision.GetComponent<PlayerMassage>());
+    //            Destroy(collision.gameObject);
 
-                //Janleによって処理変更
-                MassageAction(collision.GetComponent<PlayerMassage>().Janle);
-                break;
-            case TagName.Girl:
-                InstanceMassage.Remove(this);
-                Destroy(this.gameObject);
-                Girl.Rated(MassageNum);
-                break;
-            default:
-                break;
-        }
-    }
+    //            //Janleによって処理変更
+    //            MassageAction(collision.GetComponent<PlayerMassage>().Janle);
+    //            break;
+    //        case TagName.Girl:
+    //            InstanceMassage.Remove(this);
+    //            Destroy(this.gameObject);
+    //            Girl.Rated(MassageNum);
+    //            break;
+    //        default:
+    //            break;
+    //    }
+    //}
 
     //セリフ接触時アクション
-    private void MassageAction(PlayerMassage.PMJanle MS){
-        switch (MS){
-            case PlayerMassage.PMJanle.Berak:
-                InstanceMassage.Remove(this);//リスト解除
-                Destroy(this.gameObject);
-                break;
-            case PlayerMassage.PMJanle.Bigger:
-                //最大でなければ大きくする
-                if (NowSize != Size.Big) {
-                    NowSize++;
-                }
-                break;
-            case PlayerMassage.PMJanle.Smoler:
-                //最小でなければ小さくする
-                if (NowSize != Size.Smole){
-                    NowSize--;
-                }
-                break;
-            default:
-                break;
-        }
-        MassgeChanger();
-    }
+    //private void MassageAction(PlayerMassage.PMJanle MS){
+    //    switch (MS){
+    //        case PlayerMassage.PMJanle.Berak:
+    //            InstanceMassage.Remove(this);//リスト解除
+    //            Destroy(this.gameObject);
+    //            break;
+    //        case PlayerMassage.PMJanle.Bigger:
+    //            //最大でなければ大きくする
+    //            if (NowSize != Size.Big) {
+    //                NowSize++;
+    //            }
+    //            break;
+    //        case PlayerMassage.PMJanle.Smoler:
+    //            //最小でなければ小さくする
+    //            if (NowSize != Size.Smole){
+    //                NowSize--;
+    //            }
+    //            break;
+    //        default:
+    //            break;
+    //    }
+    //    MassgeChanger();
+    //}
 
     private void MassgeChanger(){
         Sprite ChangeSprite = new Sprite();//変更先Sprite

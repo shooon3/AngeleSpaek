@@ -9,12 +9,16 @@ public class PlayerMassage : MonoBehaviour {
     private static List<Vector2> Speed = new List<Vector2>();//セリフ速度
 
     public enum Janle { Break, Bigger, Smoler };//プレイヤーセリフ一覧
-    public Janle SetJanle;//設定されるセリフ
+    public Janle ThisJanle;//設定されるセリフ
 
     //テキスト
     private const string Break = "こわれろー";
     private const string Bigger = "おおきくなれー";
     private const string Smoler = "ちいさくなれー";
+
+    //消滅時計
+    private float Timer;//時間計測
+    public float DestroyTime;//破壊までの時間
 
     //ステータス
     private TextMesh TM;
@@ -47,7 +51,7 @@ public class PlayerMassage : MonoBehaviour {
         string Text;
 
         //SetJanleによって表示テキスト切替
-        switch (SetJanle){
+        switch (ThisJanle){
             case Janle.Smoler:
                 Text = Smoler;
                 break;
@@ -70,6 +74,15 @@ public class PlayerMassage : MonoBehaviour {
         //各種コンポーネント取得
         TM = GetComponentInChildren<TextMesh>();
         RB2D = GetComponent<Rigidbody2D>();
+    }
+
+    private void Update(){
+        if(Timer > DestroyTime){
+            List.Remove(this);//リストから削除
+            Destroy(this.gameObject);
+        }
+
+        Timer += Time.deltaTime;//時間計測
     }
 
 }
