@@ -42,7 +42,7 @@ public class Main : MonoBehaviour {
         else{
             Player.DegChanger();
             Enemy.IsShot();
-            Girl.IsTalkTitleChange();
+            Girl.TalkTitleTimer();
         }
 
       

@@ -8,7 +8,7 @@ public class Enemy : MonoBehaviour{
     public float Interval;
 
     public GameObject ENMassagePre;//エネミーセリフプレファブ
-    private GameObject ENMassage;//エネミーセリフ
+    //private GameObject ENMassage;//エネミーセリフ
 
     public void IsShot(){
         Timer += Time.deltaTime;//経過時間計測
@@ -20,7 +20,8 @@ public class Enemy : MonoBehaviour{
         }
     }
     private void Shot(){
-        ENMassage = Instantiate(ENMassagePre, transform.position, Quaternion.identity) as GameObject;//セリフを生成
+        //ENMassage = Instantiate(ENMassagePre, transform.position, Quaternion.identity) as GameObject;//セリフを生成
+        Instantiate(ENMassagePre, transform.position, Quaternion.identity);
     }
 
 }

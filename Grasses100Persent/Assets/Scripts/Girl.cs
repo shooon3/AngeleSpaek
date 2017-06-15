@@ -9,18 +9,19 @@ public class Girl : MonoBehaviour {
     private int MaxRated = 5;//評価最大値
     private int MinRated = -5;//評価最低値
 
-    //タイマー
+    //話題切り替えタイマー
     private float Timer;//経過時間
     public float Interval;//間隔
 
-    //セリフ
+    //話題提供吹き出し
     private int TalkTitleNum;
     private string TalkTitle;//話題
 
     //ステータス
     public TextMesh Text;//テキスト
 
-    public void IsTalkTitleChange(){
+    //話題変更タイマー
+    public void TalkTitleTimer(){
         Timer += Time.deltaTime;
         if(Timer > Interval){
             TalkTitleChange();
@@ -34,20 +35,20 @@ public class Girl : MonoBehaviour {
         int index = new int();
         while (true){
             index = Random.Range(0, MassageList.UseMassage.Length);
-            //０番は使用しない
-            if (MassageList.UseMassage[index] != 0) {
-                //同じ話題にしないこと
+            //同じ話題回避・０番は使用しない
+            if (MassageList.UseMassage[index] != 0 && TalkTitleNum != MassageList.UseMassage[index]) {
+                TalkTitleNum = MassageList.UseMassage[index];
                 break;
             }
         }
-        TalkTitle = MassageList.Massage[MassageList.UseMassage[index]];
-        Text.text = TalkTitle;
+        TalkTitle = MassageList.Massage[TalkTitleNum];
+        Text.text = TalkTitle;//テキスト変更
     }
 
     //評価メソッド
-    public void Rated(string Massage){
+    public void Rated(int MassageNum){
         //表示中の話題と同じ話題なら評価ＵＰ
-        if (Massage == TalkTitle){
+        if (MassageNum == TalkTitleNum){
             NowRated++;
             if(NowRated > MaxRated){
                 NowRated = MaxRated;

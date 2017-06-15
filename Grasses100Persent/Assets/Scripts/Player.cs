@@ -74,13 +74,13 @@ public class Player : MonoBehaviour {
         ShotPow += AddPow;//パワー加算
 
         //ShotPowを判定
-        if(ShotPow < SmolerPow){
+        if (ShotPow < SmolerPow){
             //判定：ちいさくなれー
             PM.ThisJanle = PlayerMassage.Janle.Smoler;
         }
         else if(ShotPow > BiggerPow){
             //判定：おおきくなれ―
-            PM.ThisJanle = PlayerMassage.Janle.Smoler;
+            PM.ThisJanle = PlayerMassage.Janle.Bigger;
         }
         else{
             //判定：こわれろー
@@ -103,12 +103,12 @@ public class Player : MonoBehaviour {
         PlayerMassage.List.Add(MassageObj.GetComponent<PlayerMassage>());
 
         //停止
-        StartCoroutine(ShotFreeze());
+        //StartCoroutine(ShotFreeze());
+        Invoke("ShotFreeze",FreezeTime);
     }
 
     //停止メソッド
-    private IEnumerator ShotFreeze(){
-        yield return new WaitForSeconds(FreezeTime);
+    private void ShotFreeze(){
         IsAddDeg = true;
     }
 

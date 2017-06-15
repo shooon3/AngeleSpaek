@@ -77,12 +77,14 @@ public class PlayerMassage : MonoBehaviour {
     }
 
     private void Update(){
-        if(Timer > DestroyTime){
-            List.Remove(this);//リストから削除
-            Destroy(this.gameObject);
-        }
+        if (RB2D.velocity != Vector2.zero){
+            if (Timer > DestroyTime){
+                List.Remove(this);//リストから削除
+                Destroy(this.gameObject);
+            }
 
-        Timer += Time.deltaTime;//時間計測
+            Timer += Time.deltaTime;//時間計測
+        }
     }
 
 }
