@@ -10,6 +10,12 @@ public class Main : MonoBehaviour {
 
     private bool ShotF = false;//角度変更中か否か判定フラグ
 
+    //ゲーム中のみ生成するオブジェクト
+    public GameObject GirlMassagePre;
+    private GameObject GM;
+    public Vector3 GirlMassagePos;
+    public Vector3 GirlMassageRotate;
+
     //各種スクリプト
     public Player Player;
     public Enemy Enemy;
@@ -33,6 +39,9 @@ public class Main : MonoBehaviour {
         if (Input.GetButtonDown("Fire1")){
             //タップされたら次のシーンへ遷移
             NextState();
+            //ゲームシーンに生成
+            GM = (GameObject)Instantiate(GirlMassagePre, GirlMassagePos, Quaternion.Euler(GirlMassageRotate));
+            Girl.Text = GM.transform.GetChild(0).GetComponent<TextMesh>();
             return;
         }
     }//タイトルシーン処理
@@ -44,6 +53,7 @@ public class Main : MonoBehaviour {
             //吹き出しを破棄
             PlayerMassage.GameEnd();
             EnemyMassage.GameEnd();
+            Destroy(GM);
             NextState();
             return;
         }
