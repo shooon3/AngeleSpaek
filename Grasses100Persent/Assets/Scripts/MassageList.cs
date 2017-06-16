@@ -14,16 +14,19 @@ public static class MassageList{
             SelectCount = UseMassage.Length;
         }
 
-        for (int i = 0; i < SelectCount; i++){
-            int index = Random.Range(1, Massage.Length);//ランダムにワードを決定
+        for (int i = 0; i < UseMassage.Length; i++){
+            int index = 0;
 
-            ////同じワードが含まれないようにする
-            //for (int j = 0; j < i; j++){
-            //    if(UseMassage[j] == index){
-            //        continue;
-            //    }
-            //}
+            if (i < SelectCount){
+                index = Random.Range(1, Massage.Length);//ランダムにワードを決定
 
+                //同じワードが含まれないようにする
+                for (int j = 0; j < i; j++){
+                    if (UseMassage[j] == index){
+                        continue;
+                    }
+                }
+            }
             //ワードを確定
             UseMassage[i] = index;
         }
