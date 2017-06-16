@@ -17,6 +17,11 @@ public class Girl : MonoBehaviour {
     private int TalkTitleNum;
     private string TalkTitle;//話題
 
+    //花
+    public GameObject Flower;
+    public Sprite[] FlowerSprites;
+    public Vector3 FlowerPos;
+
     //ステータス
     public TextMesh Text;//テキスト
 
@@ -62,13 +67,17 @@ public class Girl : MonoBehaviour {
 
         //声量・話題が適切なら評価アップ
         if (MassageNum == TalkTitleNum && Janle == EnemyMassage.Janle.Normal){
+            GameObject InstanceFlower = (GameObject)Instantiate(Flower, FlowerPos, Quaternion.identity);//花で評価アップを表現
+            int index = Random.Range(0, FlowerSprites.Length);//花の色をランダムに決定
+            InstanceFlower.GetComponent<SpriteRenderer>().sprite = FlowerSprites[index];
+
             NowRated++;
             if (NowRated > MaxRated){
                 NowRated = MaxRated;
             }
 
             //音声をランダムに決定
-            int index = Random.Range(0, Voice_RateUp.Length);
+            index = Random.Range(0, Voice_RateUp.Length);
             AS.clip = Voice_RateUp[index];
         }
         //適切でないので評価ダウン
