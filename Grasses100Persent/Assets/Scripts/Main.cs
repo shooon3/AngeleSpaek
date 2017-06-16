@@ -42,6 +42,7 @@ public class Main : MonoBehaviour {
             //ゲームシーンに生成
             GM = (GameObject)Instantiate(GirlMassagePre, GirlMassagePos, Quaternion.Euler(GirlMassageRotate));
             Girl.Text = GM.transform.GetChild(0).GetComponent<TextMesh>();
+            Girl.TalkTitleChange();
             return;
         }
     }//タイトルシーン処理
@@ -97,6 +98,8 @@ public class Main : MonoBehaviour {
             NextState();
             //評価を基に戻す
             Girl.NowRated = 0;
+            //メガホンを基に戻す
+            Player.MegahonReset();
             return;
         }
     }//リザルトシーン処理

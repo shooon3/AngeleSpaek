@@ -22,6 +22,8 @@ public class Girl : MonoBehaviour {
     public Sprite[] FlowerSprites;
     public Vector3 FlowerPos;
 
+    public Sprite QuestionSprite;
+
     //ステータス
     public TextMesh Text;//テキスト
 
@@ -44,7 +46,7 @@ public class Girl : MonoBehaviour {
     }
 
     //話題変更メソッド
-    private void TalkTitleChange() { 
+    public void TalkTitleChange() { 
         //次の話題を決定
         int index = new int();
         while (true){
@@ -82,6 +84,9 @@ public class Girl : MonoBehaviour {
         }
         //適切でないので評価ダウン
         else{
+            GameObject InstanceFlower = (GameObject)Instantiate(Flower, FlowerPos, Quaternion.identity);//花で評価アップを表現
+            InstanceFlower.GetComponent<SpriteRenderer>().sprite = QuestionSprite;
+
             NowRated--;
             if (NowRated < MinRated){
                 NowRated = MinRated;

@@ -116,4 +116,8 @@ public class Player : MonoBehaviour {
         IsAddDeg = true;
     }
 
+    public void MegahonReset(){
+        transform.Rotate(Vector3.zero);
+    }
+
 }
