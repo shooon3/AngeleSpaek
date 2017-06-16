@@ -17,12 +17,12 @@ public static class MassageList{
         for (int i = 0; i < SelectCount; i++){
             int index = Random.Range(1, Massage.Length);//ランダムにワードを決定
 
-            //同じワードが含まれないようにする
-            for (int j = 0; j < i; j++){
-                if(UseMassage[j] == index){
-                    continue;
-                }
-            }
+            ////同じワードが含まれないようにする
+            //for (int j = 0; j < i; j++){
+            //    if(UseMassage[j] == index){
+            //        continue;
+            //    }
+            //}
 
             //ワードを確定
             UseMassage[i] = index;
