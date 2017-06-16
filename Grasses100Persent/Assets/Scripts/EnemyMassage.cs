@@ -134,6 +134,8 @@ public class EnemyMassage : MonoBehaviour {
     }
 
     private void Awake(){
+        transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);//表示位置調整
+
         //ステータス取得
         RB = GetComponent<Rigidbody2D>();//RigidBody取得
         SR = GetComponent<SpriteRenderer>();//SpriteRenderer取得

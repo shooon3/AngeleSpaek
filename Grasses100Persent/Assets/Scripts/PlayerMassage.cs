@@ -71,6 +71,8 @@ public class PlayerMassage : MonoBehaviour {
     }
 
     private void Awake(){
+        transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);//表示位置調整
+        
         //各種コンポーネント取得
         TM = GetComponentInChildren<TextMesh>();
         RB2D = GetComponent<Rigidbody2D>();
