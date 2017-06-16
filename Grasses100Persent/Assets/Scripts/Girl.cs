@@ -20,6 +20,16 @@ public class Girl : MonoBehaviour {
     //ステータス
     public TextMesh Text;//テキスト
 
+    //彼女のボイス集
+    public AudioClip DownVoice1;
+    public AudioClip DownVoice2;
+    public AudioClip DownVoice3;
+    public AudioClip UpVoice1;
+    public AudioClip UpVoice2;
+    public AudioClip ChangeVoice1;
+    public AudioClip ChangeVoice2;
+
+
     //話題変更タイマー
     public void TalkTitleTimer(){
         Timer += Time.deltaTime;
@@ -66,4 +76,6 @@ public class Girl : MonoBehaviour {
     private void Awake(){
         TalkTitleChange();
     }
-}
+
+  
+  }
