@@ -21,14 +21,13 @@ public class Girl : MonoBehaviour {
     public TextMesh Text;//テキスト
 
     //彼女のボイス集
-    public AudioClip DownVoice1;
-    public AudioClip DownVoice2;
-    public AudioClip DownVoice3;
-    public AudioClip UpVoice1;
-    public AudioClip UpVoice2;
-    public AudioClip ChangeVoice1;
-    public AudioClip ChangeVoice2;
+        public AudioClip[] Voice_RateDown;//評価ダウン
+        public AudioClip[] Voice_RateUp;//評価アップ
+        public AudioClip[] Voice_TTChange;//話題変更
 
+    private AudioSource AS;
+
+   
 
     //話題変更タイマー
     public void TalkTitleTimer(){
@@ -53,6 +52,9 @@ public class Girl : MonoBehaviour {
         }
         TalkTitle = MassageList.Massage[TalkTitleNum];
         Text.text = TalkTitle;//テキスト変更
+        index = Random.Range(0, Voice_TTChange.Length);//音声をランダムに決定
+        AS.clip = Voice_TTChange[index];
+        AS.Play();//音声再生
     }
 
     //評価メソッド
@@ -63,6 +65,10 @@ public class Girl : MonoBehaviour {
             if(NowRated > MaxRated){
                 NowRated = MaxRated;
             }
+
+            int index = Random.Range(0, Voice_RateUp.Length);//音声をランダムに決定
+            AS.clip = Voice_RateUp[index];
+            //UpVoice1.PlayOneShot(UpVoice1.clip);
         }
         //違う話題なら評価ＤＯＷＮ
         else{
@@ -70,10 +76,16 @@ public class Girl : MonoBehaviour {
             if(NowRated < MinRated){
                 NowRated = MinRated;
             }
+            int index = Random.Range(0, Voice_RateDown.Length);//音声をランダムに決定
+            AS.clip = Voice_RateDown[index];
+            //DownVoice1.PlayOneShot(DownVoice1.clip);
         }
+        AS.Play();//音声再生
     }
 
     private void Awake(){
+        AS = GetComponent<AudioSource>();//AudioSource取得
+
         TalkTitleChange();
     }
 
