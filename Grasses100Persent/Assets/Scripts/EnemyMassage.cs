@@ -17,11 +17,11 @@ public class EnemyMassage : MonoBehaviour {
     }
 
     //種類
-    private enum Janle {Smole,Normal,Big };
+    public enum Janle {Smole,Normal,Big };
     private Janle NowJanle;
 
     //リスト
-    private static List<EnemyMassage> InstanceMassage = new List<EnemyMassage>();
+    private static List<EnemyMassage> List = new List<EnemyMassage>();
     private static List<Vector2> IMSpeed = new List<Vector2>();
 
     //吹き出し
@@ -42,13 +42,13 @@ public class EnemyMassage : MonoBehaviour {
     //停止メソッド
     public static bool IsFreeze{
         set{
-            for (int i = 0; i < InstanceMassage.Count; i++){
+            for (int i = 0; i < List.Count; i++){
                 if (value){
-                    IMSpeed.Add(InstanceMassage[i].RB.velocity);//速度保存
-                    InstanceMassage[i].RB.velocity = Vector2.zero;//停止
+                    IMSpeed.Add(List[i].RB.velocity);//速度保存
+                    List[i].RB.velocity = Vector2.zero;//停止
                 }
                 else{
-                    InstanceMassage[i].RB.velocity = IMSpeed[i];//速度登録
+                    List[i].RB.velocity = IMSpeed[i];//速度登録
                 }
             }
 
@@ -72,9 +72,9 @@ public class EnemyMassage : MonoBehaviour {
                 MassageAction(collision.GetComponent<PlayerMassage>().ThisJanle);
                 break;
             case "Girl":
-                InstanceMassage.Remove(this);
+                List.Remove(this);
                 Destroy(this.gameObject);
-                Girl.Rated(SetMassageNum);
+                Girl.Rated(SetMassageNum, NowJanle);
                 break;
             default:
                 break;
@@ -85,7 +85,7 @@ public class EnemyMassage : MonoBehaviour {
     private void MassageAction(PlayerMassage.Janle PMJ){
         switch (PMJ){
             case PlayerMassage.Janle.Break://接触：こわれろー
-                InstanceMassage.Remove(this);//リスト解除
+                List.Remove(this);//リスト解除
                 Destroy(this.gameObject);
                 break;
             case PlayerMassage.Janle.Bigger://接触：おおきくなれー
@@ -133,6 +133,21 @@ public class EnemyMassage : MonoBehaviour {
         RB.velocity = GirlPos * ChangeSpeed;//スピード変更
     }
 
+    //ゲーム終了時吹き出しを破棄
+    public static void GameEnd(){
+
+        var AnotherList = List.ToArray();//配列に変換
+        foreach (var EM in AnotherList) {
+            EM.CallOutDestroyer();
+        }
+
+    }
+
+    private void CallOutDestroyer(){
+        List.Remove(this);
+        Destroy(this.gameObject);
+    }
+
     private void Awake(){
         transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);//表示位置調整
 
@@ -144,7 +159,7 @@ public class EnemyMassage : MonoBehaviour {
         Girl = GirlObj.GetComponent<Girl>();//Girlスクリプト取得
         GirlPos = GirlObj.transform.position - transform.position;//Girlの方向を取得
 
-        InstanceMassage.Add(this);//リストに追加
+        List.Add(this);//リストに追加
 
         //吹き出し初期化
         NowJanle = (Janle)Random.Range(0,3);//声量をランダムに決定

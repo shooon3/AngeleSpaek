@@ -5,9 +5,9 @@ using UnityEngine;
 public class Girl : MonoBehaviour {
 
     //評価パラメータ
-    public int NowRated;//現在の評価
-    private int MaxRated = 5;//評価最大値
-    private int MinRated = -5;//評価最低値
+    public static int NowRated;//現在の評価
+    public static int MaxRated = 5;//評価最大値
+    public static int MinRated = -5;//評価最低値
 
     //話題切り替えタイマー
     private float Timer;//経過時間
@@ -58,35 +58,38 @@ public class Girl : MonoBehaviour {
     }
 
     //評価メソッド
-    public void Rated(int MassageNum){
-        //表示中の話題と同じ話題なら評価ＵＰ
-        if (MassageNum == TalkTitleNum){
+    public void Rated(int MassageNum, EnemyMassage.Janle Janle){
+
+        //声量・話題が適切なら評価アップ
+        if (MassageNum == TalkTitleNum && Janle == EnemyMassage.Janle.Normal){
             NowRated++;
-            if(NowRated > MaxRated){
+            if (NowRated > MaxRated){
                 NowRated = MaxRated;
             }
 
-            int index = Random.Range(0, Voice_RateUp.Length);//音声をランダムに決定
+            //音声をランダムに決定
+            int index = Random.Range(0, Voice_RateUp.Length);
             AS.clip = Voice_RateUp[index];
-            //UpVoice1.PlayOneShot(UpVoice1.clip);
         }
-        //違う話題なら評価ＤＯＷＮ
+        //適切でないので評価ダウン
         else{
             NowRated--;
-            if(NowRated < MinRated){
+            if (NowRated < MinRated){
                 NowRated = MinRated;
             }
-            int index = Random.Range(0, Voice_RateDown.Length);//音声をランダムに決定
+            
+            //音声をランダムに決定
+            int index = Random.Range(0, Voice_RateDown.Length);
             AS.clip = Voice_RateDown[index];
-            //DownVoice1.PlayOneShot(DownVoice1.clip);
         }
+
         AS.Play();//音声再生
     }
 
     private void Awake(){
         AS = GetComponent<AudioSource>();//AudioSource取得
 
-        TalkTitleChange();
+        //TalkTitleChange();
     }
 
   

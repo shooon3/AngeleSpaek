@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class Main : MonoBehaviour {
 
-    private bool ShotF;//角度変更中か否か判定フラグ
+    public enum GameState {Title = 1,Game,Result, }//ゲームの状態
+    public GameState NowState;//現在の状態
+    private GameState LastStae;//ステートの最後
+
+    private bool ShotF = false;//角度変更中か否か判定フラグ
 
     //各種スクリプト
     public Player Player;
@@ -12,10 +16,40 @@ public class Main : MonoBehaviour {
     public Girl Girl;
 
 
-    void Update () {
+    //次のステートに進める
+    private void NextState(){
+        //ステートが最後なら最初に戻す
+        if (NowState >= LastStae){
+            NowState = (GameState)1;
+        }
+        //ステートを進める
+        else {
+            NowState++;
+        }
+
+    }
+
+    private void Title(){
+        if (Input.GetButtonDown("Fire1")){
+            //タップされたら次のシーンへ遷移
+            NextState();
+            return;
+        }
+    }//タイトルシーン処理
+
+    private void Game(){
+
+        //評価が最悪／最低になったら次のステートへ遷移
+        if(Girl.NowRated >= Girl.MaxRated || Girl.NowRated <= Girl.MinRated){
+            //吹き出しを破棄
+            PlayerMassage.GameEnd();
+            EnemyMassage.GameEnd();
+            NextState();
+            return;
+        }
 
         //指を離すとセリフ発射
-        if (Input.GetButtonUp("Fire1")){
+        if (Input.GetButtonUp("Fire1") && ShotF){
             ShotF = false;
 
             //フリーズ解除
@@ -39,14 +73,48 @@ public class Main : MonoBehaviour {
         if (ShotF){
             Player.MassageChange();
         }
-        else{
+        else {
             Player.DegChanger();
             Enemy.IsShot();
             Girl.TalkTitleTimer();
         }
 
-      
+    }//ゲームシーン処理
 
+    private void Result(){
+        if (Input.GetButtonDown("Fire1")){
+            //タップで次のシーンへ遷移
+            NextState();
+            //評価を基に戻す
+            Girl.NowRated = 0;
+            return;
+        }
+    }//リザルトシーン処理
+
+    private void Awake(){
+        //タイトルから始まる
+        NowState = GameState.Title;
+
+        //ステートの最後を取得
+        LastStae = (GameState)System.Enum.GetNames(typeof(GameState)).Length;
+    }
+
+    void Update(){
+        switch (NowState){
+            case GameState.Title:
+                Title();
+                break;
+            case GameState.Game:
+                Game();
+                break;
+            case GameState.Result:
+                Result();
+                break;
+            default:
+                //Stateにない値が入っているのは異常なので終了する
+                Application.Quit();
+                break;
+        }
     }
 
 }

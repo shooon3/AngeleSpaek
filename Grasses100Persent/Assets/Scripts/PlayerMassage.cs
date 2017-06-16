@@ -70,6 +70,20 @@ public class PlayerMassage : MonoBehaviour {
         TM.text = Text;//表示テキスト変更
     }
 
+    public static void GameEnd(){
+
+        var AnotherList = List.ToArray();//配列化
+        foreach (var PM in AnotherList){
+            PM.CallOutDestroyer();
+        }
+
+    }
+
+    private void CallOutDestroyer(){
+        List.Remove(this);
+        Destroy(this.gameObject);
+    }
+
     private void Awake(){
         transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);//表示位置調整
         
