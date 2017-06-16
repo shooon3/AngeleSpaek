@@ -129,7 +129,7 @@ public class EnemyMassage : MonoBehaviour {
                 break;
         }
 
-        //SR.sprite = ChangeSprite;//吹き出し変更
+        SR.sprite = ChangeSprite;//吹き出し変更
         RB.velocity = GirlPos * ChangeSpeed;//スピード変更
     }
 

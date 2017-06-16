@@ -10,6 +10,7 @@ public class Player : MonoBehaviour {
     private const float MaxPow = 90;//範囲最大
     private const float SmolerPow = 30;//判定：ちいさくなーれ
     private const float BiggerPow = 60;//判定：おおきくなーれ
+    private const float InstanceposAdjuster = 2;//配置位置調整
 
     //発射角変更用変数
     private bool IsAddDeg = true;//角度変更判定フラグ
@@ -60,7 +61,10 @@ public class Player : MonoBehaviour {
         //角度変更を止める
         IsAddDeg = false;
 
-        MassageObj = Instantiate(MassagePre,transform.position,Quaternion.identity) as GameObject;//吹き出しを生成
+        float ShotRad = ShotDeg * Mathf.Deg2Rad;//ラジアン変換
+        Vector3 ShotVec = new Vector3(Mathf.Cos(ShotRad), Mathf.Sin(ShotRad),0);//角度計算
+
+        MassageObj = Instantiate(MassagePre,transform.position+ShotVec*InstanceposAdjuster,Quaternion.identity) as GameObject;//吹き出しを生成
         PM = MassageObj.GetComponent<PlayerMassage>();//吹き出しを記憶
     }
 
