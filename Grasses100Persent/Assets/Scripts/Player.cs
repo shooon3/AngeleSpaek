@@ -117,7 +117,7 @@ public class Player : MonoBehaviour {
     }
 
     public void MegahonReset(){
-        transform.Rotate(Vector3.zero);
+        transform.rotation = Quaternion.Euler(Vector3.zero);
     }
 
 }

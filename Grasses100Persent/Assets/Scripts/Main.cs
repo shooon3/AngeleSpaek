@@ -42,8 +42,8 @@ public class Main : MonoBehaviour {
             //ゲームシーンに生成
             GM = (GameObject)Instantiate(GirlMassagePre, GirlMassagePos, Quaternion.Euler(GirlMassageRotate));
             Girl.Text = GM.transform.GetChild(0).GetComponent<TextMesh>();
-            Girl.TalkTitleChange();
             MassageList.MassageSelection(5);
+            Girl.TalkTitleChange();
             return;
         }
     }//タイトルシーン処理

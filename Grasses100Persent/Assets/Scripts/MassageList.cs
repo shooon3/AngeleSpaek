@@ -5,7 +5,7 @@ using UnityEngine;
 public static class MassageList{
     public enum Janle { Plase, Animal, Food, Hobby };
 
-    public static int[] UseMassage=new int[10];
+    public static int[] UseMassage=new int[10] { 0,0,0,0,0,0,0,0,0,0,};
 
     //使用する単語をランダムに決定
     public static void MassageSelection(int SelectCount){
