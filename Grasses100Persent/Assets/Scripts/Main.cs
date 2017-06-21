@@ -17,16 +17,29 @@ public class Main : MonoBehaviour {
     public Vector3 GirlMassageRotate;
 
     //各種スクリプト
-    public Player Player;
+    private Player Player;
     public Enemy Enemy;
     public Girl Girl;
 
+    private bool IsStart = true;
+
+    //天使
+    public GameObject AngelPre;
+    private GameObject AngelObj;
+    public Vector3 AngelPos;
+
+    //タイトル
+    public GameObject TitlePre;
+    private GameObject TitleObj;
+    public Vector3 TitlePos;
 
     //次のステートに進める
     private void NextState(){
         //ステートが最後なら最初に戻す
         if (NowState >= LastStae){
             NowState = (GameState)1;
+            //スタートに戻る
+            IsStart = true;
         }
         //ステートを進める
         else {
@@ -36,14 +49,25 @@ public class Main : MonoBehaviour {
     }
 
     private void Title(){
+        if (IsStart){
+            TitleObj = (GameObject)Instantiate(TitlePre,TitlePos, Quaternion.identity);
+            IsStart = false;
+        }
+
         if (Input.GetButtonDown("Fire1")){
             //タップされたら次のシーンへ遷移
             NextState();
             //ゲームシーンに生成
+            AngelObj = (GameObject)Instantiate(AngelPre, AngelPos, Quaternion.identity);
             GM = (GameObject)Instantiate(GirlMassagePre, GirlMassagePos, Quaternion.Euler(GirlMassageRotate));
             Girl.Text = GM.transform.GetChild(0).GetComponent<TextMesh>();
             MassageList.MassageSelection(5);
             Girl.TalkTitleChange();
+            //タイトルシーンから削除
+            Destroy(TitleObj);
+
+            //紐づけスクリプト捜索
+            Player = GameObject.FindWithTag("Player").transform.GetChild(0).GetComponent<Player>();
             return;
         }
     }//タイトルシーン処理

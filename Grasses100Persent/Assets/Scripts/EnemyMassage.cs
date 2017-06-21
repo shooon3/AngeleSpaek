@@ -3,12 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyMassage : MonoBehaviour {
-    ////タグ一覧
-    //private class TagName{
-    //    public const string Massage   = "Massage";
-    //    public const string Girl      = "Girl";
-    //}
-
     //速度一覧
     private class Speed{
         public const float Slow  = 0.05f;
@@ -38,6 +32,10 @@ public class EnemyMassage : MonoBehaviour {
 
     //紐づけスクリプト
     Girl Girl;
+
+    private static float Z_PosNum = -1;
+    private const float MaxPos = -9.8f;
+    private const float AddPos = -0.1f;
 
     //停止メソッド
     public static bool IsFreeze{
@@ -141,6 +139,7 @@ public class EnemyMassage : MonoBehaviour {
             EM.CallOutDestroyer();
         }
 
+        Z_PosNum = -1;
     }
 
     private void CallOutDestroyer(){
@@ -174,6 +173,9 @@ public class EnemyMassage : MonoBehaviour {
         Text.text = MassageList.Massage[SetMassageNum];//セリフを更新
         MassgeChanger();
 
+        Z_PosNum = (Z_PosNum <= MaxPos) ? -1 : Z_PosNum;
+        transform.position = new Vector3(transform.position.x, transform.position.y, Z_PosNum);
+        Z_PosNum += AddPos;
     }
 
 }
