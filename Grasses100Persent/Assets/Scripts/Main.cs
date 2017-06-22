@@ -102,13 +102,15 @@ public class Main : MonoBehaviour {
                 //ゲーム準備
                 UseMassageNum = (UseMassageNum < 1) ? 1 : UseMassageNum;//バグ回避
                 MassageList.MassageSelection(UseMassageNum);//使用ワード選択
-                Girl.TalkTitleChange();
                 break;
             case GameState.Result:
                 break;
             default:
                 break;
         }
+
+        BackGrandImage.sprite = (NowState == GameState.Result) ? ResultBack : GameBack;//背景変更
+
     }//シーンに必要なオブジェクトを生成
 
     private void ObjDestroyer(){
@@ -126,7 +128,6 @@ public class Main : MonoBehaviour {
                 EnemyMassage.GameEnd();
                 break;
             case GameState.Result:
-                Girl.NowRated = 0;//評価リセット
                 break;
             default:
                 break;

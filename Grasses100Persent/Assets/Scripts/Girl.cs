@@ -102,8 +102,12 @@ public class Girl : MonoBehaviour {
 
     private void Awake(){
         AS = GetComponent<AudioSource>();//AudioSource取得
+        Text = GameObject.Find("TalkTitle").GetComponent<TextMesh>();
 
-        //TalkTitleChange();
+        //各種数値リセット
+        NowRated = 0;
+        Timer = 0; 
+        TalkTitleChange();
     }
 
   
