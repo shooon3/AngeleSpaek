@@ -107,7 +107,7 @@ public class Girl : MonoBehaviour {
         //各種数値リセット
         NowRated = 0;
         Timer = 0; 
-        TalkTitleChange();
+        //TalkTitleChange();
     }
 
   

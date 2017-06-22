@@ -56,6 +56,16 @@ public class Main : MonoBehaviour {
     public Sprite ResultBack;
     public Image BackGrandImage;
 
+    //ＢＧＭ
+    public AudioSource BGM;
+    public AudioClip TitleBGM;
+    public AudioClip GameBGM;
+    public AudioClip ClearSound;
+    public AudioClip OverSound;
+    public float SilegntTime;
+
+    //public AudioSource AS;
+
     //次のステートに進める
     private void NextState(){
         //シーンから不要なものを削除
@@ -87,6 +97,8 @@ public class Main : MonoBehaviour {
                 TitleObj                 = (GameObject)Instantiate(TitlePre, TitlePos, Quaternion.identity);
                 RunAngelObj    = (GameObject)Instantiate(RunAngelPre, RunAngelPos, Quaternion.identity);
                 //TapToStartObj = (GameObject)Instantiate(TapToStartPre, TTSPos, Quaternion.identity);
+                BGM.clip = TitleBGM;
+                BGM.loop = true;
                 break;
             case GameState.Game:
                 //オブジェクト生成
@@ -102,14 +114,23 @@ public class Main : MonoBehaviour {
                 //ゲーム準備
                 UseMassageNum = (UseMassageNum < 1) ? 1 : UseMassageNum;//バグ回避
                 MassageList.MassageSelection(UseMassageNum);//使用ワード選択
+                Girl.TalkTitleChange();
+                BGM.clip = GameBGM;
+                BGM.loop = true;
                 break;
             case GameState.Result:
+                BGM.clip = (Girl.NowRated >= Girl.MaxRated) ? ClearSound : OverSound;
+                BGM.loop = false;
                 break;
             default:
                 break;
         }
 
         BackGrandImage.sprite = (NowState == GameState.Result) ? ResultBack : GameBack;//背景変更
+        //BGM.clip = (NowState == GameState.Title) ? TitleBGM : GameBGM;
+
+        Invoke("BGMPlayer", SilegntTime);
+        //BGM.Play();
 
     }//シーンに必要なオブジェクトを生成
 
@@ -137,6 +158,7 @@ public class Main : MonoBehaviour {
     private void Title(){
         if (Input.GetButtonDown("Fire1")){
             //タップされたら次のシーンへ遷移
+            //AS.Play();
             NextState();
         }
     }//タイトルシーン処理
@@ -195,6 +217,10 @@ public class Main : MonoBehaviour {
 
         //ステートの最後を取得
         LastStae = (GameState)System.Enum.GetNames(typeof(GameState)).Length;
+    }
+
+    private void BGMPlayer(){
+        BGM.Play();
     }
 
     void Update(){

@@ -27,7 +27,9 @@ public class Player : MonoBehaviour {
     //吹き出し
     public GameObject MassagePre;//セリフプレファブ
     private GameObject MassageObj;//セリフ
-    
+
+    public AudioSource AS;
+
     //紐づけスクリプト
     private PlayerMassage PM;
 
@@ -105,6 +107,8 @@ public class Player : MonoBehaviour {
         Vector2 ShotVec = new Vector2(Mathf.Cos(ShotRad), Mathf.Sin(ShotRad));//角度計算
         MassageObj.GetComponent<Rigidbody2D>().velocity = ShotVec * ShotSpeed;//加速
         PlayerMassage.List.Add(MassageObj.GetComponent<PlayerMassage>());
+
+        AS.Play();
 
         //停止
         //StartCoroutine(ShotFreeze());
