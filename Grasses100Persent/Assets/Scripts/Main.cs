@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Main : MonoBehaviour {
 
-    public enum GameState {Title = 1,Game,Result, }//ゲームの状態
+    public enum GameState {Title = 1,Difficulty,Game,Result, }//ゲームの状態
     public GameState NowState;//現在の状態
     private GameState LastStae;//ステートの最後
 
@@ -18,12 +18,21 @@ public class Main : MonoBehaviour {
     public GameObject TitlePre;
     public GameObject RunAngelPre;
     public GameObject TapToStartPre;
+    //難易度設定
+    public GameObject DifficultyText;
+    public GameObject AddWordButton;
+    public GameObject ReduceWordButton;
+    public GameObject NumBox;
+    public Sprite[] NumSprite;
     //ゲーム
     public GameObject AngelPre;
     public GameObject OtaniPre;
     public GameObject GirlPre;
     public GameObject RatedHartPre;
     //リザルト
+    public GameObject RatedTextPre;
+    public Sprite ClearSprite;
+    public Sprite GameOverSprite;
 
     //ゲームオブジェクト一覧
     //タイトル
@@ -36,6 +45,7 @@ public class Main : MonoBehaviour {
     private GameObject GirlObj;
     private GameObject RatedHartObj;
     //リザルト
+    private GameObject RatedTextObj;
 
     //生成位置一覧
     //タイトル
@@ -48,6 +58,7 @@ public class Main : MonoBehaviour {
     public Vector3 GirlPos;
     public Vector3 RatedHartPos;
     //リザルト
+    public Vector3 RatedTextPos;
 
     //各種スクリプト
     private Player Player;
@@ -99,7 +110,7 @@ public class Main : MonoBehaviour {
             case GameState.Title:
                 TitleObj                 = (GameObject)Instantiate(TitlePre, TitlePos, Quaternion.identity);
                 RunAngelObj    = (GameObject)Instantiate(RunAngelPre, RunAngelPos, Quaternion.identity);
-                //TapToStartObj = (GameObject)Instantiate(TapToStartPre, TTSPos, Quaternion.identity);
+                TapToStartObj = (GameObject)Instantiate(TapToStartPre, TTSPos, Quaternion.identity);
                 BGM.clip = TitleBGM;
                 BGM.loop = true;
                 break;
@@ -117,12 +128,14 @@ public class Main : MonoBehaviour {
 
                 //ゲーム準備
                 UseMassageNum = (UseMassageNum < 1) ? 1 : UseMassageNum;//バグ回避
-                MassageList.MassageSelection(UseMassageNum);//使用ワード選択
+                //MassageList.MassageSelection(UseMassageNum);//使用ワード選択
                 Girl.TalkTitleChange();
                 BGM.clip = GameBGM;
                 BGM.loop = true;
                 break;
             case GameState.Result:
+                RatedTextObj = (GameObject)Instantiate(RatedTextPre, RatedTextPos, Quaternion.identity);
+                RatedTextObj.GetComponent<SpriteRenderer>().sprite = (Girl.NowRated >= Girl.MaxRated) ? ClearSprite : GameOverSprite;
                 BGM.clip = (Girl.NowRated >= Girl.MaxRated) ? ClearSound : OverSound;
                 BGM.loop = false;
                 break;
@@ -143,7 +156,7 @@ public class Main : MonoBehaviour {
             case GameState.Title:
                 Destroy(TitleObj);
                 Destroy(RunAngelObj);
-                //Destroy(TapToStartObj);
+                Destroy(TapToStartObj);
                 break;
             case GameState.Game:
                 Destroy(AngelObj);
@@ -154,6 +167,7 @@ public class Main : MonoBehaviour {
                 EnemyMassage.GameEnd();
                 break;
             case GameState.Result:
+                Destroy(RatedTextObj);
                 break;
             default:
                 break;
@@ -167,6 +181,10 @@ public class Main : MonoBehaviour {
             NextState();
         }
     }//タイトルシーン処理
+
+    private void DiffiCultySelect(){
+
+    }
 
     private void Game(){
 
@@ -228,10 +246,25 @@ public class Main : MonoBehaviour {
         BGM.Play();
     }
 
+    public void AddWord(){
+        UseMassageNum = (UseMassageNum >= MassageList.UseMassage.Length) ? MassageList.UseMassage.Length : UseMassageNum + 1;
+    }
+
+    public void ReduceWord(){
+        UseMassageNum = (UseMassageNum <= 0) ? 0 : UseMassageNum - 1;
+    }
+
+    public void GameStart(){
+        MassageList.MassageSelection(UseMassageNum);
+        NextState(GameState.Game);
+    }
+
     void Update(){
         switch (NowState){
             case GameState.Title:
                 Title();
+                break;
+            case GameState.Difficulty:
                 break;
             case GameState.Game:
                 Game();
