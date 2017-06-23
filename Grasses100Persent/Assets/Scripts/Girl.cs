@@ -6,8 +6,10 @@ public class Girl : MonoBehaviour {
 
     //評価パラメータ
     public static int NowRated;//現在の評価
-    public static int MaxRated = 5;//評価最大値
-    public static int MinRated = -5;//評価最低値
+    public static int MaxRated = 10;//評価最大値
+    public static int MinRated = 0;//評価最低値
+    public static int FormatRated = 5;//評価初期値
+    public int NowRatedView;
 
     //話題切り替えタイマー
     private float Timer;//経過時間
@@ -105,10 +107,13 @@ public class Girl : MonoBehaviour {
         Text = GameObject.Find("TalkTitle").GetComponent<TextMesh>();
 
         //各種数値リセット
-        NowRated = 0;
+        NowRated = FormatRated;
         Timer = 0; 
         //TalkTitleChange();
     }
 
+    private void Update(){
+        NowRatedView = NowRated;
+    }
   
   }

@@ -22,6 +22,7 @@ public class Main : MonoBehaviour {
     public GameObject AngelPre;
     public GameObject OtaniPre;
     public GameObject GirlPre;
+    public GameObject RatedHartPre;
     //リザルト
 
     //ゲームオブジェクト一覧
@@ -33,6 +34,7 @@ public class Main : MonoBehaviour {
     private GameObject AngelObj;
     private GameObject OtaniObj;
     private GameObject GirlObj;
+    private GameObject RatedHartObj;
     //リザルト
 
     //生成位置一覧
@@ -44,6 +46,7 @@ public class Main : MonoBehaviour {
     public Vector3 AngelPos;
     public Vector3 OtaniPos;
     public Vector3 GirlPos;
+    public Vector3 RatedHartPos;
     //リザルト
 
     //各種スクリプト
@@ -102,9 +105,10 @@ public class Main : MonoBehaviour {
                 break;
             case GameState.Game:
                 //オブジェクト生成
-                AngelObj = (GameObject)Instantiate(AngelPre, AngelPos, Quaternion.identity);
-                OtaniObj  = (GameObject)Instantiate(OtaniPre, OtaniPos, Quaternion.identity);
-                GirlObj      = (GameObject)Instantiate(GirlPre, GirlPos, Quaternion.identity);
+                AngelObj           = (GameObject)Instantiate(AngelPre, AngelPos, Quaternion.identity);
+                OtaniObj            = (GameObject)Instantiate(OtaniPre, OtaniPos, Quaternion.identity);
+                GirlObj                 = (GameObject)Instantiate(GirlPre, GirlPos, Quaternion.identity);
+                RatedHartObj = (GameObject)Instantiate(RatedHartPre, RatedHartPos, Quaternion.identity);
 
                 //スクリプト紐づけ
                 Player = AngelObj.transform.GetChild(0).GetComponent<Player>();
@@ -145,6 +149,7 @@ public class Main : MonoBehaviour {
                 Destroy(AngelObj);
                 Destroy(OtaniObj);
                 Destroy(GirlObj);
+                Destroy(RatedHartObj);
                 PlayerMassage.GameEnd();
                 EnemyMassage.GameEnd();
                 break;
