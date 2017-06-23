@@ -5,11 +5,12 @@ using UnityEngine.UI;
 
 public class Main : MonoBehaviour {
 
-    public enum GameState {Title = 1,Difficulty,Game,Result, }//ゲームの状態
+    public enum GameState {Title = 1,Game,Result, }//ゲームの状態
     public GameState NowState;//現在の状態
     private GameState LastStae;//ステートの最後
 
     private bool ShotF = false;//角度変更中か否か判定フラグ
+    public static bool ReturnToTitleF;
 
     public int UseMassageNum;//使用するワードの個数
 
@@ -18,12 +19,6 @@ public class Main : MonoBehaviour {
     public GameObject TitlePre;
     public GameObject RunAngelPre;
     public GameObject TapToStartPre;
-    //難易度設定
-    public GameObject DifficultyText;
-    public GameObject AddWordButton;
-    public GameObject ReduceWordButton;
-    public GameObject NumBox;
-    public Sprite[] NumSprite;
     //ゲーム
     public GameObject AngelPre;
     public GameObject OtaniPre;
@@ -108,8 +103,8 @@ public class Main : MonoBehaviour {
     private void ObjInstancer(){
         switch (NowState) {
             case GameState.Title:
-                TitleObj                 = (GameObject)Instantiate(TitlePre, TitlePos, Quaternion.identity);
-                RunAngelObj    = (GameObject)Instantiate(RunAngelPre, RunAngelPos, Quaternion.identity);
+                TitleObj = (GameObject)Instantiate(TitlePre, TitlePos, Quaternion.identity);
+                RunAngelObj = (GameObject)Instantiate(RunAngelPre, RunAngelPos, Quaternion.identity);
                 TapToStartObj = (GameObject)Instantiate(TapToStartPre, TTSPos, Quaternion.identity);
                 BGM.clip = TitleBGM;
                 BGM.loop = true;
@@ -128,7 +123,7 @@ public class Main : MonoBehaviour {
 
                 //ゲーム準備
                 UseMassageNum = (UseMassageNum < 1) ? 1 : UseMassageNum;//バグ回避
-                //MassageList.MassageSelection(UseMassageNum);//使用ワード選択
+                MassageList.MassageSelection(UseMassageNum);//使用ワード選択
                 Girl.TalkTitleChange();
                 BGM.clip = GameBGM;
                 BGM.loop = true;
@@ -168,6 +163,7 @@ public class Main : MonoBehaviour {
                 break;
             case GameState.Result:
                 Destroy(RatedTextObj);
+                ReturnToTitleF = false;
                 break;
             default:
                 break;
@@ -181,10 +177,6 @@ public class Main : MonoBehaviour {
             NextState();
         }
     }//タイトルシーン処理
-
-    private void DiffiCultySelect(){
-
-    }
 
     private void Game(){
 
@@ -228,7 +220,7 @@ public class Main : MonoBehaviour {
     }//ゲームシーン処理
 
     private void Result(){
-        if (Input.GetButtonDown("Fire1")){
+        if (Input.GetButtonDown("Fire1") && ReturnToTitleF){
             //タップで次のシーンへ遷移
             NextState();
         }
@@ -238,6 +230,8 @@ public class Main : MonoBehaviour {
         //タイトルから始まる
         NextState(GameState.Title);
 
+        ReturnToTitleF = false;
+
         //ステートの最後を取得
         LastStae = (GameState)System.Enum.GetNames(typeof(GameState)).Length;
     }
@@ -246,25 +240,10 @@ public class Main : MonoBehaviour {
         BGM.Play();
     }
 
-    public void AddWord(){
-        UseMassageNum = (UseMassageNum >= MassageList.UseMassage.Length) ? MassageList.UseMassage.Length : UseMassageNum + 1;
-    }
-
-    public void ReduceWord(){
-        UseMassageNum = (UseMassageNum <= 0) ? 0 : UseMassageNum - 1;
-    }
-
-    public void GameStart(){
-        MassageList.MassageSelection(UseMassageNum);
-        NextState(GameState.Game);
-    }
-
     void Update(){
         switch (NowState){
             case GameState.Title:
                 Title();
-                break;
-            case GameState.Difficulty:
                 break;
             case GameState.Game:
                 Game();
