@@ -9,7 +9,7 @@ public class Main : MonoBehaviour {
     public GameState NowState;//現在の状態
     private GameState LastStae;//ステートの最後
 
-    private bool ShotF = false;//角度変更中か否か判定フラグ
+    public static bool ShotF = false;//角度変更中か否か判定フラグ
     public static bool ReturnToTitleF;
 
     public int UseMassageNum;//使用するワードの個数

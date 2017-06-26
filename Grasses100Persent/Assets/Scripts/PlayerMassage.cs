@@ -86,7 +86,9 @@ public class PlayerMassage : MonoBehaviour {
 
     private void Awake(){
         transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);//表示位置調整
-        
+
+        //List.Add(this);
+
         //各種コンポーネント取得
         TM = GetComponentInChildren<TextMesh>();
         RB2D = GetComponent<Rigidbody2D>();
@@ -100,6 +102,11 @@ public class PlayerMassage : MonoBehaviour {
             }
 
             Timer += Time.deltaTime;//時間計測
+        }
+
+        if(!Main.ShotF && RB2D.velocity == Vector2.zero){
+            List.Remove(this);
+            Destroy(this.gameObject);
         }
     }
 
