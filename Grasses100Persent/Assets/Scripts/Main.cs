@@ -5,20 +5,25 @@ using UnityEngine.UI;
 
 public class Main : MonoBehaviour {
 
-    public enum GameState {Title = 1,Game,Result, }//ゲームの状態
+    public enum GameState {Title = 1,Difficulty,Game,Result, }//ゲームの状態
     public GameState NowState;//現在の状態
     private GameState LastStae;//ステートの最後
 
     public static bool ShotF = false;//角度変更中か否か判定フラグ
     public static bool ReturnToTitleF;
 
-    public int UseMassageNum;//使用するワードの個数
+    //public int UseMassageNum;//使用するワードの個数
 
     //プレファブ一覧
     //タイトル
     public GameObject TitlePre;
     public GameObject RunAngelPre;
     public GameObject TapToStartPre;
+    //難易度設定
+    public GameObject AddDifficultyButtonPre;
+    public GameObject ReduceDifficultyButtonPre;
+    public GameObject DifficultyNumBoxPre;
+    public GameObject NextStateButtonPre;
     //ゲーム
     public GameObject AngelPre;
     public GameObject OtaniPre;
@@ -34,6 +39,11 @@ public class Main : MonoBehaviour {
     private GameObject TitleObj;
     private GameObject RunAngelObj;
     private GameObject TapToStartObj;
+    //難易度設定
+    private GameObject AddDifficultyButtonObj;
+    private GameObject ReduceDifficultyButtonObj;
+    private GameObject DifficultyNumBoxObj;
+    private GameObject NextStateButtonObj;
     //ゲーム
     private GameObject AngelObj;
     private GameObject OtaniObj;
@@ -47,6 +57,11 @@ public class Main : MonoBehaviour {
     public Vector3 TitlePos;
     public Vector3 RunAngelPos;
     public Vector3 TTSPos;
+    //難易度設定
+    public Vector3 ADBPos;
+    public Vector3 RDBPos;
+    public Vector3 DNBPos;
+    public Vector3 NSBPos;
     //ゲーム
     public Vector3 AngelPos;
     public Vector3 OtaniPos;
@@ -65,6 +80,8 @@ public class Main : MonoBehaviour {
     public Sprite ResultBack;
     public Image BackGrandImage;
 
+    public Transform Canvas;
+
     //ＢＧＭ
     public AudioSource BGM;
     public AudioClip TitleBGM;
@@ -76,7 +93,7 @@ public class Main : MonoBehaviour {
     //public AudioSource AS;
 
     //次のステートに進める
-    private void NextState(){
+    public void NextState(){
         //シーンから不要なものを削除
         ObjDestroyer();
         
@@ -109,6 +126,43 @@ public class Main : MonoBehaviour {
                 BGM.clip = TitleBGM;
                 BGM.loop = true;
                 break;
+            case GameState.Difficulty:
+
+                //オブジェクト生成
+                AddDifficultyButtonObj = (GameObject)Instantiate(AddDifficultyButtonPre);
+                ReduceDifficultyButtonObj = (GameObject)Instantiate(ReduceDifficultyButtonPre);
+                DifficultyNumBoxObj               = (GameObject)Instantiate(DifficultyNumBoxPre);
+                NextStateButtonObj                   = (GameObject)Instantiate(NextStateButtonPre);
+
+                //子オブジェクトに設定
+                AddDifficultyButtonObj.transform.SetParent(Canvas);
+                ReduceDifficultyButtonObj.transform.SetParent(Canvas);
+                DifficultyNumBoxObj.transform.SetParent(Canvas);
+                NextStateButtonObj.transform.SetParent(Canvas);
+
+                //RectTransform調整
+                RectTransform ADB = AddDifficultyButtonObj.GetComponent<RectTransform>();
+                RectTransform RDB = ReduceDifficultyButtonObj.GetComponent<RectTransform>();
+                RectTransform DNB = DifficultyNumBoxObj.GetComponent<RectTransform>();
+                RectTransform NSB  = NextStateButtonObj.GetComponent<RectTransform>();
+
+                //位置調整
+                ADB.localPosition = ADBPos;
+                RDB.localPosition = RDBPos;
+                DNB.localPosition = DNBPos;
+                NSB.localPosition  = NSBPos;
+
+                //大きさ調整
+                ADB.localScale = new Vector3(1, 1, 1);
+                RDB.localScale = new Vector3(1, 1, 1);
+                DNB.localScale = new Vector3(1, 1, 1);
+                NSB.localScale = new Vector3(1, 1, 1);
+
+                //クリックイベント設定
+                AddDifficultyButtonObj.GetComponent<Button>().onClick.AddListener(delegate { MassageList.AddDifficulty(); });
+                ReduceDifficultyButtonObj.GetComponent<Button>().onClick.AddListener(delegate { MassageList.ReduceDifficulty(); });
+                NextStateButtonObj.GetComponent<Button>().onClick.AddListener(delegate { NextState(); });
+                break;
             case GameState.Game:
                 //オブジェクト生成
                 AngelObj           = (GameObject)Instantiate(AngelPre, AngelPos, Quaternion.identity);
@@ -122,8 +176,8 @@ public class Main : MonoBehaviour {
                 Girl = GirlObj.GetComponent<Girl>();
 
                 //ゲーム準備
-                UseMassageNum = (UseMassageNum < 1) ? 1 : UseMassageNum;//バグ回避
-                MassageList.MassageSelection(UseMassageNum);//使用ワード選択
+                //UseMassageNum = (UseMassageNum < 1) ? 1 : UseMassageNum;//バグ回避
+                MassageList.MassageSelection();//使用ワード選択
                 Girl.TalkTitleChange();
                 BGM.clip = GameBGM;
                 BGM.loop = true;
@@ -152,6 +206,12 @@ public class Main : MonoBehaviour {
                 Destroy(TitleObj);
                 Destroy(RunAngelObj);
                 Destroy(TapToStartObj);
+                break;
+            case GameState.Difficulty:
+                Destroy(AddDifficultyButtonObj);
+                Destroy(ReduceDifficultyButtonObj);
+                Destroy(DifficultyNumBoxObj);
+                Destroy(NextStateButtonObj);
                 break;
             case GameState.Game:
                 Destroy(AngelObj);
@@ -244,6 +304,8 @@ public class Main : MonoBehaviour {
         switch (NowState){
             case GameState.Title:
                 Title();
+                break;
+            case GameState.Difficulty:
                 break;
             case GameState.Game:
                 Game();

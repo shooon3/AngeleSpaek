@@ -1,23 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 public static class MassageList{
     public enum Janle { Plase, Animal, Food, Hobby };
 
     public static int[] UseMassage=new int[10] { 0,0,0,0,0,0,0,0,0,0,};
 
+    private static int UseMassageNum = 3;
+    private static int MinUseMassageNum = 3;
+
     //使用する単語をランダムに決定
-    public static void MassageSelection(int SelectCount){
+    public static void MassageSelection(){
         //配列の範囲を出ないようにする
-        if(SelectCount > UseMassage.Length){
-            SelectCount = UseMassage.Length;
+        if(UseMassageNum > UseMassage.Length){
+            UseMassageNum = UseMassage.Length;
         }
 
         for (int i = 0; i < UseMassage.Length; i++){
             int index = 0;
 
-            if (i < SelectCount){
+            if (i < UseMassageNum){
                 index = Random.Range(1, Massage.Length);//ランダムにワードを決定
 
                 //同じワードが含まれないようにする
@@ -59,5 +64,19 @@ public static class MassageList{
         "登山",
         "ダーツ",
     };
+
+    public static void AddDifficulty(){
+        //UseMassageの範囲を出ないように加算
+        UseMassageNum = (UseMassageNum >= UseMassage.Length)?UseMassage.Length:UseMassageNum + 1;
+    }
+
+    public static void ReduceDifficulty(){
+        //MinUseMassageNumの範囲を出ないように減算
+        UseMassageNum = (UseMassageNum <= MinUseMassageNum) ? MinUseMassageNum : UseMassageNum - 1;
+    }
+
+    public static int ReturnDifficulty(){
+        return UseMassageNum;
+    }
 
 }
