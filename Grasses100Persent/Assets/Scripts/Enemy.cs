@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour{
 
+    public string StateFName;
+
     private float Timer;
     private float Interval;
 
