@@ -85,6 +85,7 @@ public class Main : MonoBehaviour {
     //ＢＧＭ
     public AudioSource BGM;
     public AudioClip TitleBGM;
+    public AudioClip DifficultySelectBGM;
     public AudioClip GameBGM;
     public AudioClip ClearSound;
     public AudioClip OverSound;
@@ -159,9 +160,13 @@ public class Main : MonoBehaviour {
                 NSB.localScale  = new Vector3(1, 1, 1);
 
                 //クリックイベント設定
-                AddDifficultyButtonObj.GetComponent<Button>().onClick.AddListener(delegate { MassageList.AddDifficulty(); });
-                ReduceDifficultyButtonObj.GetComponent<Button>().onClick.AddListener(delegate { MassageList.ReduceDifficulty(); });
+                AddDifficultyButtonObj.GetComponent<Button>().onClick.AddListener(delegate { MassageList.DifficultyToHard(); });
+                ReduceDifficultyButtonObj.GetComponent<Button>().onClick.AddListener(delegate { MassageList.DifficultyToEasy(); });
+                NextStateButtonObj.GetComponent<Button>().onClick.AddListener(delegate { MassageList.DifficultySet(); });
                 NextStateButtonObj.GetComponent<Button>().onClick.AddListener(delegate { NextState(); });
+
+                //ＢＧＭ準備
+                BGM.clip = DifficultySelectBGM;
                 break;
             case GameState.Game:
                 //オブジェクト生成
@@ -177,7 +182,6 @@ public class Main : MonoBehaviour {
 
                 //ゲーム準備
                 //UseMassageNum = (UseMassageNum < 1) ? 1 : UseMassageNum;//バグ回避
-                MassageList.MassageSelection();//使用ワード選択
                 Girl.TalkTitleChange();
                 BGM.clip = GameBGM;
                 BGM.loop = true;

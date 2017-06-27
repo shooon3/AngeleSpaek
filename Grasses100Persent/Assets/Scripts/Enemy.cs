@@ -5,7 +5,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour{
 
     private float Timer;
-    public float Interval;
+    private float Interval;
 
     public GameObject ENMassagePre;//エネミーセリフプレファブ
     //private GameObject ENMassage;//エネミーセリフ
@@ -22,6 +22,10 @@ public class Enemy : MonoBehaviour{
     private void Shot(){
         //ENMassage = Instantiate(ENMassagePre, transform.position, Quaternion.identity) as GameObject;//セリフを生成
         Instantiate(ENMassagePre, transform.position, Quaternion.identity);
+    }
+
+    private void Awake(){
+        Interval = MassageList.ShotInterval;
     }
 
 }

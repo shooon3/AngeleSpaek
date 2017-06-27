@@ -5,24 +5,31 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 
 public static class MassageList{
+    //enum宣言
     public enum Janle { Plase, Animal, Food, Hobby };
+    public enum Diffculty {Easy,Normal,Hard };
+    public static Diffculty NowDiffculty = Diffculty.Easy;
 
-    public static int[] UseMassage=new int[10] { 0,0,0,0,0,0,0,0,0,0,};
+    //使用単語
+    public static int[] UseMassage=new int[7] { 0,0,0,0,0,0,0};
+    private static int UseMassageCount;
+    private static int[] UseMassageNum = { 3, 5, 7 };
 
-    private static int UseMassageNum = 3;
-    private static int MinUseMassageNum = 3;
+    //大谷君の会話間隔
+    public static float ShotInterval;
+    private static float[] ShotIntervalPre = { 5.0f, 3.0f,1.5f };
 
     //使用する単語をランダムに決定
-    public static void MassageSelection(){
+    private static void MassageSelection(){
         //配列の範囲を出ないようにする
-        if(UseMassageNum > UseMassage.Length){
-            UseMassageNum = UseMassage.Length;
+        if(UseMassageCount > UseMassage.Length){
+            UseMassageCount = UseMassage.Length;
         }
 
         for (int i = 0; i < UseMassage.Length; i++){
             int index = 0;
 
-            if (i < UseMassageNum){
+            if (i < UseMassageCount){
                 index = Random.Range(1, Massage.Length);//ランダムにワードを決定
 
                 //同じワードが含まれないようにする
@@ -65,18 +72,24 @@ public static class MassageList{
         "ダーツ",
     };
 
-    public static void AddDifficulty(){
-        //UseMassageの範囲を出ないように加算
-        UseMassageNum = (UseMassageNum >= UseMassage.Length)?UseMassage.Length:UseMassageNum + 1;
+    public static void DifficultySet(){
+        //キャスト変換を済ませる
+        int index = (int)NowDiffculty;
+        
+        //使用ワード数決定
+        UseMassageCount = UseMassageNum[index];
+        //言葉発射間隔設定
+        ShotInterval = ShotIntervalPre[index];
+
+        MassageSelection();
     }
 
-    public static void ReduceDifficulty(){
-        //MinUseMassageNumの範囲を出ないように減算
-        UseMassageNum = (UseMassageNum <= MinUseMassageNum) ? MinUseMassageNum : UseMassageNum - 1;
+    public static void DifficultyToHard(){
+        NowDiffculty = (NowDiffculty != Diffculty.Hard) ? NowDiffculty + 1 : Diffculty.Hard;
     }
 
-    public static int ReturnDifficulty(){
-        return UseMassageNum;
+    public static void DifficultyToEasy(){
+        NowDiffculty = (NowDiffculty != Diffculty.Easy) ? NowDiffculty - 1 : Diffculty.Easy;
     }
 
 }
