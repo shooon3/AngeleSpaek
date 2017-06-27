@@ -29,6 +29,7 @@ public class Enemy : MonoBehaviour{
 
     private void Awake(){
         Animator = GetComponent<Animator>();
+        Animator.SetInteger("Motion", 0);
     }
 
 }

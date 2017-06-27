@@ -128,7 +128,7 @@ public class Main : MonoBehaviour {
 
                 //ゲーム準備
                 UseMassageNum = (UseMassageNum < 1) ? 1 : UseMassageNum;//バグ回避
-                //MassageList.MassageSelection(UseMassageNum);//使用ワード選択
+                MassageList.MassageSelection(UseMassageNum);//使用ワード選択
                 Girl.TalkTitleChange();
                 BGM.clip = GameBGM;
                 BGM.loop = true;
