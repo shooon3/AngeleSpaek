@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour{
 
+    public string StateFName;
+
     private float Timer;
     public float Interval;
+    public float AniInterval;
 
     public GameObject ENMassagePre;//エネミーセリフプレファブ
     //private GameObject ENMassage;//エネミーセリフ
@@ -14,6 +17,10 @@ public class Enemy : MonoBehaviour{
 
     public void IsShot(){
         Timer += Time.deltaTime;//経過時間計測
+
+        if (Timer >= AniInterval && !Animator.GetBool(StateFName)){
+            AniChanger();
+        }
 
         //一定時間経過でセリフ発射
         if (Timer >= Interval){
@@ -24,12 +31,20 @@ public class Enemy : MonoBehaviour{
     private void Shot(){
         //ENMassage = Instantiate(ENMassagePre, transform.position, Quaternion.identity) as GameObject;//セリフを生成
         Instantiate(ENMassagePre, transform.position, Quaternion.identity);
-        Animator.SetInteger("Motion", 1);//アニメーション開始
+        AniChanger();
+    }
+
+    private void AniChanger(){
+        Animator.SetBool(StateFName, (Animator.GetBool(StateFName)) ? false : true);
+    }
+
+    private void AniChanger(bool x){
+        Animator.SetBool("Motion", x);
     }
 
     private void Awake(){
         Animator = GetComponent<Animator>();
-        Animator.SetInteger("Motion", 0);
+        AniChanger(false);
     }
 
 }
