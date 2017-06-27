@@ -242,6 +242,19 @@ public class Main : MonoBehaviour {
         }
     }//タイトルシーン処理
 
+    private void DifficultySelect(){
+        if (Input.GetKeyDown(KeyCode.UpArrow)){
+            MassageList.DifficultyToHard();
+        }
+        if (Input.GetKeyDown(KeyCode.DownArrow)){
+            MassageList.DifficultyToEasy();
+        }
+        if (Input.GetButtonDown("Fire1")){
+            MassageList.DifficultySet();
+            NextState();
+        }
+    }
+
     private void Game(){
 
         //評価が最悪／最低になったら次のステートへ遷移
@@ -310,6 +323,7 @@ public class Main : MonoBehaviour {
                 Title();
                 break;
             case GameState.Difficulty:
+                DifficultySelect();
                 break;
             case GameState.Game:
                 Game();

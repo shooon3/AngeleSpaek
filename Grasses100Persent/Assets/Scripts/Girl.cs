@@ -6,14 +6,14 @@ public class Girl : MonoBehaviour {
 
     //評価パラメータ
     public static int NowRated;//現在の評価
-    public static int MaxRated = 10;//評価最大値
+    public static int MaxRated = 6;//評価最大値
     public static int MinRated = 0;//評価最低値
-    public static int FormatRated = 5;//評価初期値
+    public static int FormatRated = 3;//評価初期値
     public int NowRatedView;
 
     //話題切り替えタイマー
     private float Timer;//経過時間
-    public float Interval;//間隔
+    private float Interval;//間隔
 
     //話題提供吹き出し
     private int TalkTitleNum;
@@ -41,9 +41,15 @@ public class Girl : MonoBehaviour {
     //話題変更タイマー
     public void TalkTitleTimer(){
         Timer += Time.deltaTime;
-        if(Timer > Interval){
+
+        if(Timer >= Interval - 1){
+            Text.color = new Color(Text.color.r, Text.color.g, Text.color.b,Interval - Timer );
+        }
+
+        if (Timer > Interval){
             TalkTitleChange();
             Timer = 0;
+            Text.color = new Color(Text.color.r, Text.color.g, Text.color.b, 1);
         }
     }
 
@@ -107,13 +113,10 @@ public class Girl : MonoBehaviour {
         Text = GameObject.Find("TalkTitle").GetComponent<TextMesh>();
 
         //各種数値リセット
+        Interval = MassageList.ChangeInterval;
         NowRated = FormatRated;
         Timer = 0; 
         //TalkTitleChange();
     }
 
-    private void Update(){
-        NowRatedView = NowRated;
-    }
-  
   }

@@ -34,8 +34,6 @@ public class EnemyMassage : MonoBehaviour {
     Girl Girl;
 
     private static float Z_PosNum = -1;
-    private const float MaxPos = -9.8f;
-    private const float AddPos = -0.1f;
 
     //停止メソッド
     public static bool IsFreeze{
@@ -57,6 +55,14 @@ public class EnemyMassage : MonoBehaviour {
         }
     }
 
+    public static void ZAjaster(){
+        for (int i = 0; i < List.Count; i++){
+            Vector3 Pos = List[i].transform.position;
+            Pos.z = i / 10.0f * Z_PosNum + Z_PosNum;
+            List[i].transform.position = Pos;
+        }
+    }
+
     //衝突時処理
     private void OnTriggerEnter2D(Collider2D collision){
         //衝突物によって処理変更
@@ -71,6 +77,7 @@ public class EnemyMassage : MonoBehaviour {
                 break;
             case "Girl":
                 List.Remove(this);
+                ZAjaster();
                 Destroy(this.gameObject);
                 Girl.Rated(SetMassageNum, NowJanle);
                 break;
@@ -84,6 +91,7 @@ public class EnemyMassage : MonoBehaviour {
         switch (PMJ){
             case PlayerMassage.Janle.Break://接触：こわれろー
                 List.Remove(this);//リスト解除
+                ZAjaster();
                 Destroy(this.gameObject);
                 break;
             case PlayerMassage.Janle.Bigger://接触：おおきくなれー
@@ -148,7 +156,7 @@ public class EnemyMassage : MonoBehaviour {
     }
 
     private void Awake(){
-        transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);//表示位置調整
+        //transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);//表示位置調整
 
         //ステータス取得
         RB = GetComponent<Rigidbody2D>();//RigidBody取得
@@ -159,6 +167,7 @@ public class EnemyMassage : MonoBehaviour {
         GirlPos = GirlObj.transform.position - transform.position;//Girlの方向を取得
 
         List.Add(this);//リストに追加
+        ZAjaster();
 
         //吹き出し初期化
         NowJanle = (Janle)Random.Range(0,3);//声量をランダムに決定
@@ -173,9 +182,6 @@ public class EnemyMassage : MonoBehaviour {
         Text.text = MassageList.Massage[SetMassageNum];//セリフを更新
         MassgeChanger();
 
-        Z_PosNum = (Z_PosNum <= MaxPos) ? -1 : Z_PosNum;
-        transform.position = new Vector3(transform.position.x, transform.position.y, Z_PosNum);
-        Z_PosNum += AddPos;
     }
 
 }

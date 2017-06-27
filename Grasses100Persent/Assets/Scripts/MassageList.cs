@@ -6,9 +6,8 @@ using UnityEngine.UI;
 
 public static class MassageList{
     //enum宣言
-    public enum Janle { Plase, Animal, Food, Hobby };
     public enum Diffculty {Easy,Normal,Hard };
-    public static Diffculty NowDiffculty = Diffculty.Easy;
+    public static Diffculty NowDiffculty = Diffculty.Normal;
 
     //使用単語
     public static int[] UseMassage=new int[7] { 0,0,0,0,0,0,0};
@@ -18,6 +17,10 @@ public static class MassageList{
     //大谷君の会話間隔
     public static float ShotInterval;
     private static float[] ShotIntervalPre = { 5.0f, 3.0f,1.5f };
+
+    //彼女の話題変更間隔
+    public static float ChangeInterval;
+    private static float[] ChangeIntervalPre = { 20.0f, 15.0f, 10.0f };
 
     //使用する単語をランダムに決定
     private static void MassageSelection(){
@@ -80,6 +83,8 @@ public static class MassageList{
         UseMassageCount = UseMassageNum[index];
         //言葉発射間隔設定
         ShotInterval = ShotIntervalPre[index];
+        //話題変更間隔設定
+        ChangeInterval = ChangeIntervalPre[index];
 
         MassageSelection();
     }

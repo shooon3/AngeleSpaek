@@ -24,6 +24,8 @@ public class PlayerMassage : MonoBehaviour {
     private TextMesh TM;
     private Rigidbody2D RB2D;
 
+    private static float Z_PosNum = -1;
+
     //フリーズ
     public static bool IsFreeze{
         set{
@@ -46,6 +48,14 @@ public class PlayerMassage : MonoBehaviour {
         }
     }
     
+    public static void ZAjaster(){
+        for (int i = 0; i < List.Count; i++){
+            Vector3 Pos = List[i].transform.position;
+            Pos.z = i / 10.0f * Z_PosNum + Z_PosNum;
+            List[i].transform.position = Pos;
+        }
+    }
+
     //Text切替メソッド
     public void TextChange(){
         string Text;
@@ -85,7 +95,9 @@ public class PlayerMassage : MonoBehaviour {
     }
 
     private void Awake(){
-        transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);//表示位置調整
+        ZAjaster();
+        
+        //transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);//表示位置調整
 
         //List.Add(this);
 
