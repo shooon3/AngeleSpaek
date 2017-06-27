@@ -156,7 +156,7 @@ public class Main : MonoBehaviour {
                 ADB.localScale = new Vector3(1, 1, 1);
                 RDB.localScale = new Vector3(1, 1, 1);
                 DNB.localScale = new Vector3(1, 1, 1);
-                NSB.localScale = new Vector3(1, 1, 1);
+                NSB.localScale  = new Vector3(1, 1, 1);
 
                 //クリックイベント設定
                 AddDifficultyButtonObj.GetComponent<Button>().onClick.AddListener(delegate { MassageList.AddDifficulty(); });
