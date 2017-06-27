@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Main : MonoBehaviour {
 
-    public enum GameState {Title = 1,Difficulty,Game,Result, }//ゲームの状態
+    public enum GameState {Title = 1,Game,Result, }//ゲームの状態
     public GameState NowState;//現在の状態
     private GameState LastStae;//ステートの最後
 
@@ -264,9 +264,9 @@ public class Main : MonoBehaviour {
             case GameState.Title:
                 Title();
                 break;
-            case GameState.Difficulty:
-                NextState();
-                break;
+            //case GameState.Difficulty:
+            //    NextState();
+            //    break;
             case GameState.Game:
                 Game();
                 break;
