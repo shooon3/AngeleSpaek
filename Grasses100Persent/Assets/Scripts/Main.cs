@@ -265,6 +265,7 @@ public class Main : MonoBehaviour {
                 Title();
                 break;
             case GameState.Difficulty:
+                NextState();
                 break;
             case GameState.Game:
                 Game();
