@@ -91,6 +91,7 @@ public class PlayerMassage : MonoBehaviour {
 
     private void CallOutDestroyer(){
         List.Remove(this);
+        ZAjaster();
         Destroy(this.gameObject);
     }
 
@@ -110,14 +111,16 @@ public class PlayerMassage : MonoBehaviour {
         if (RB2D.velocity != Vector2.zero){
             if (Timer > DestroyTime){
                 List.Remove(this);//リストから削除
+                ZAjaster();
                 Destroy(this.gameObject);
             }
 
             Timer += Time.deltaTime;//時間計測
         }
 
-        if(!Main.ShotF && RB2D.velocity == Vector2.zero){
+        if (!Main.ShotF && RB2D.velocity == Vector2.zero){
             List.Remove(this);
+            ZAjaster();
             Destroy(this.gameObject);
         }
     }
