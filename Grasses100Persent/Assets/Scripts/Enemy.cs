@@ -8,6 +8,12 @@ public class Enemy : MonoBehaviour{
 
     private float Timer;
     private float Interval;
+    public float AniInterval;
+    public float ShotPosYAjaster;
+
+    public string AniFName;
+
+    private Animator animator;
 
     public GameObject ENMassagePre;//エネミーセリフプレファブ
     //private GameObject ENMassage;//エネミーセリフ
@@ -15,6 +21,9 @@ public class Enemy : MonoBehaviour{
     public void IsShot(){
         Timer += Time.deltaTime;//経過時間計測
 
+        if(Timer >= Interval - AniInterval){
+            animator.SetBool(AniFName,true);
+        }
         //一定時間経過でセリフ発射
         if (Timer >= Interval){
             Shot();
@@ -23,10 +32,14 @@ public class Enemy : MonoBehaviour{
     }
     private void Shot(){
         //ENMassage = Instantiate(ENMassagePre, transform.position, Quaternion.identity) as GameObject;//セリフを生成
-        Instantiate(ENMassagePre, transform.position, Quaternion.identity);
+        Vector3 ShotPos = transform.position;
+        ShotPos.y += ShotPosYAjaster;
+        Instantiate(ENMassagePre, ShotPos, Quaternion.identity);
+        animator.SetBool(AniFName, false);
     }
 
     private void Awake(){
+        animator = GetComponent<Animator>();
         Interval = MassageList.ShotInterval;
     }
 

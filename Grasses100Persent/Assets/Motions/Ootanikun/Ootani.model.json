@@ -1,0 +1,8 @@
+{
+	"type": "Live2D Model Setting",
+	"name": "Ootani",
+	"model": "Ootani.moc",
+	"textures": [
+		"Ootani.2048/texture_00.png"
+	]
+}
