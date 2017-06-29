@@ -33,6 +33,8 @@ public class EnemyMassage : MonoBehaviour {
     //紐づけスクリプト
     Girl Girl;
 
+    public GameObject CollisionSound;
+
     private static float Z_PosNum = -1;
 
     //停止メソッド
@@ -90,6 +92,7 @@ public class EnemyMassage : MonoBehaviour {
     private void MassageAction(PlayerMassage.Janle PMJ){
         switch (PMJ){
             case PlayerMassage.Janle.Break://接触：こわれろー
+                Instantiate(CollisionSound);
                 List.Remove(this);//リスト解除
                 ZAjaster();
                 Destroy(this.gameObject);

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMassage : MonoBehaviour {
-    
+public class PlayerMassage : MonoBehaviour
+{
+
     //リスト
     public static List<PlayerMassage> List = new List<PlayerMassage>();//生成セリフ
     private static List<Vector2> Speed = new List<Vector2>();//セリフ速度
@@ -20,18 +21,26 @@ public class PlayerMassage : MonoBehaviour {
     private float Timer;//時間計測
     public float DestroyTime;//破壊までの時間
 
+    //衝突時SE
+    public AudioClip[] CollisionSE;
+
     //ステータス
     private TextMesh TM;
     private Rigidbody2D RB2D;
+    private AudioSource AS;
 
     private static float Z_PosNum = -1;
 
     //フリーズ
-    public static bool IsFreeze{
-        set{
-            for (int i = 0; i < List.Count; i++){
+    public static bool IsFreeze
+    {
+        set
+        {
+            for (int i = 0; i < List.Count; i++)
+            {
                 //フリーズさせる
-                if (value){
+                if (value)
+                {
                     Speed.Add(List[i].RB2D.velocity);//速度保存
                     List[i].RB2D.velocity = Vector2.zero;//フリーズ
                 }
@@ -42,14 +51,17 @@ public class PlayerMassage : MonoBehaviour {
             }
 
             //リストクリア
-            if (!value){
+            if (!value)
+            {
                 Speed.Clear();
             }
         }
     }
-    
-    public static void ZAjaster(){
-        for (int i = 0; i < List.Count; i++){
+
+    public static void ZAjaster()
+    {
+        for (int i = 0; i < List.Count; i++)
+        {
             Vector3 Pos = List[i].transform.position;
             Pos.z = i / 10.0f * Z_PosNum + Z_PosNum;
             List[i].transform.position = Pos;
@@ -57,11 +69,13 @@ public class PlayerMassage : MonoBehaviour {
     }
 
     //Text切替メソッド
-    public void TextChange(){
+    public void TextChange()
+    {
         string Text;
 
         //SetJanleによって表示テキスト切替
-        switch (ThisJanle){
+        switch (ThisJanle)
+        {
             case Janle.Smoler:
                 Text = Smoler;
                 break;
@@ -80,24 +94,41 @@ public class PlayerMassage : MonoBehaviour {
         TM.text = Text;//表示テキスト変更
     }
 
-    public static void GameEnd(){
+    public static void GameEnd()
+    {
 
         var AnotherList = List.ToArray();//配列化
-        foreach (var PM in AnotherList){
+        foreach (var PM in AnotherList)
+        {
             PM.CallOutDestroyer();
         }
 
     }
 
-    private void CallOutDestroyer(){
+    private void CallOutDestroyer()
+    {
         List.Remove(this);
         ZAjaster();
         Destroy(this.gameObject);
     }
 
-    private void Awake(){
+    public void OnCollisionEnter2D(Collision2D collision){
+        AS.clip = CollisionSE[Random.Range(0, CollisionSE.Length)];
+        AS.Play();
+        Debug.Log("");
+    }
+
+    //private void OnCollisionEnter2D(Collision2D other)
+    //{
+    //    AS.clip = CollisionSE[Random.Range(0, CollisionSE.Length)];//ランダムに衝突SEを設定
+    //    AS.Play();
+    //    Debug.Log("");
+    //}
+
+    private void Awake()
+    {
         ZAjaster();
-        
+
         //transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);//表示位置調整
 
         //List.Add(this);
@@ -105,11 +136,15 @@ public class PlayerMassage : MonoBehaviour {
         //各種コンポーネント取得
         TM = GetComponentInChildren<TextMesh>();
         RB2D = GetComponent<Rigidbody2D>();
+        AS = GetComponent<AudioSource>();
     }
 
-    private void Update(){
-        if (RB2D.velocity != Vector2.zero){
-            if (Timer > DestroyTime){
+    private void Update()
+    {
+        if (RB2D.velocity != Vector2.zero)
+        {
+            if (Timer > DestroyTime)
+            {
                 List.Remove(this);//リストから削除
                 ZAjaster();
                 Destroy(this.gameObject);
@@ -118,7 +153,12 @@ public class PlayerMassage : MonoBehaviour {
             Timer += Time.deltaTime;//時間計測
         }
 
+<<<<<<< HEAD
+        if (!Main.ShotF && RB2D.velocity == Vector2.zero)
+        {
+=======
         if (!Main.ShotF && RB2D.velocity == Vector2.zero){
+>>>>>>> fcd3cfbd1048826aa95f727a6de62178fc624446
             List.Remove(this);
             ZAjaster();
             Destroy(this.gameObject);
