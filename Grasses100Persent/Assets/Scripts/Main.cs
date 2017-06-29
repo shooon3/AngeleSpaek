@@ -220,6 +220,7 @@ public class Main : MonoBehaviour {
             case GameState.Game:
                 Destroy(AngelObj);
                 Destroy(OtaniObj);
+                //DestroyImmediate(OtaniObj);
                 Destroy(GirlObj);
                 Destroy(RatedHartObj);
                 PlayerMassage.GameEnd();
@@ -268,6 +269,7 @@ public class Main : MonoBehaviour {
             ShotF = false;
 
             //フリーズ解除
+            Enemy.AniStop = false;
             PlayerMassage.IsFreeze = false;
             EnemyMassage.IsFreeze = false;
 
@@ -279,6 +281,7 @@ public class Main : MonoBehaviour {
             ShotF = true;
 
             //フリーズ
+            Enemy.AniStop = true;
             PlayerMassage.IsFreeze = true;
             EnemyMassage.IsFreeze = true;
 

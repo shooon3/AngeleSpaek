@@ -11,6 +11,8 @@ public class Enemy : MonoBehaviour{
     public float AniInterval;
     public float ShotPosYAjaster;
 
+    private float AniSpeed;
+
     public string AniFName;
 
     private Animator animator;
@@ -18,11 +20,40 @@ public class Enemy : MonoBehaviour{
     public GameObject ENMassagePre;//エネミーセリフプレファブ
     //private GameObject ENMassage;//エネミーセリフ
 
+    public bool AniStop
+    {
+        set
+        {
+            if (animator != null)
+            {
+                if (value)
+                {
+                    AniSpeed = animator.speed;
+                    animator.speed = 0;
+                }
+                else {
+                    try
+                    {
+                        animator.speed = AniSpeed;
+                    }
+                    catch
+                    {
+                        animator.speed = 1;
+                    }
+                }
+            }
+        }
+    }
+
     public void IsShot(){
         Timer += Time.deltaTime;//経過時間計測
 
-        if(Timer >= Interval - AniInterval){
-            animator.SetBool(AniFName,true);
+        if (Timer >= Interval - AniInterval)
+        {
+            if (animator != null)
+            {
+                animator.SetBool(AniFName, true);
+            }
         }
         //一定時間経過でセリフ発射
         if (Timer >= Interval){
@@ -35,7 +66,10 @@ public class Enemy : MonoBehaviour{
         Vector3 ShotPos = transform.position;
         ShotPos.y += ShotPosYAjaster;
         Instantiate(ENMassagePre, ShotPos, Quaternion.identity);
-        animator.SetBool(AniFName, false);
+        if (animator != null)
+        {
+            animator.SetBool(AniFName, false);
+        }
     }
 
     private void Awake(){

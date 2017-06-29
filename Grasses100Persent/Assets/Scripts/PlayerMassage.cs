@@ -153,12 +153,7 @@ public class PlayerMassage : MonoBehaviour
             Timer += Time.deltaTime;//時間計測
         }
 
-<<<<<<< HEAD
-        if (!Main.ShotF && RB2D.velocity == Vector2.zero)
-        {
-=======
         if (!Main.ShotF && RB2D.velocity == Vector2.zero){
->>>>>>> fcd3cfbd1048826aa95f727a6de62178fc624446
             List.Remove(this);
             ZAjaster();
             Destroy(this.gameObject);
