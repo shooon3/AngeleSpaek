@@ -249,7 +249,7 @@ public class Main : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.DownArrow)){
             MassageList.DifficultyToEasy();
         }
-        if (Input.GetButtonDown("Fire1")){
+        if (Input.GetKeyDown(KeyCode.Space)){
             MassageList.DifficultySet();
             NextState();
         }

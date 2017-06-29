@@ -66,7 +66,7 @@ public class Player : MonoBehaviour {
         float ShotRad = ShotDeg * Mathf.Deg2Rad;//ラジアン変換
         Vector3 ShotVec = new Vector3(Mathf.Cos(ShotRad), Mathf.Sin(ShotRad),0);//角度計算
 
-        MassageObj = Instantiate(MassagePre, transform.position + ShotVec * InstanceposAdjuster + new Vector3(0, 0, transform.position.z - 1), Quaternion.identity) as GameObject;//吹き出しを生成
+        MassageObj = Instantiate(MassagePre, transform.position + ShotVec * InstanceposAdjuster + new Vector3(0, 0, transform.position.z - 3), Quaternion.identity) as GameObject;//吹き出しを生成
         PM = MassageObj.GetComponent<PlayerMassage>();//吹き出しを記憶
 
     }
