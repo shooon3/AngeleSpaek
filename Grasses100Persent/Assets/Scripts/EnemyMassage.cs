@@ -10,7 +10,7 @@ public class EnemyMassage : MonoBehaviour {
         public const float Fast  = 0.2f;
     }
 
-    //種類
+    //吹き出しの状態
     public enum Janle {Smole,Normal,Big };
     private Janle NowJanle;
 
@@ -18,35 +18,40 @@ public class EnemyMassage : MonoBehaviour {
     private static List<EnemyMassage> List = new List<EnemyMassage>();
     private static List<Vector2> IMSpeed = new List<Vector2>();
 
-    //吹き出し
+    //吹き出しSprite
     public Sprite SmoleMassage = new Sprite();
     public Sprite NormalMassage = new Sprite();
     public Sprite BigMassage = new Sprite();
+    public Sprite[] MassageSprites;//０：小さい　１：普通　２：大きい
 
-    //ステータス
-    public int SetMassageNum;//セリフ
-    Vector2 GirlPos;//移動先
-    SpriteRenderer SR;//スプライト
-    public Rigidbody2D RB;//リジッドボディ
-    private TextMesh Text;//テキスト
+    //ステータス・コンポーネント
+    public int SetMassageNum;//セリフ内容
+    Vector2 GirlPos;//ターゲット
+    SpriteRenderer SR;
+    public Rigidbody2D RB;
+    private TextMesh Text;
 
     //紐づけスクリプト
     Girl Girl;
 
-    public GameObject CollisionSound;
+    public GameObject CollisionSound;//接触時ＳＥ
 
+    //表示位置調整用変数
     private static float Z_PosNum = -1;
+    private static float zPosRank = 10.0f;//分割数
 
-    //停止メソッド
     public static bool IsFreeze{
         set{
+
             for (int i = 0; i < List.Count; i++){
-                if (value){
+                if (value){//一時停止
                     IMSpeed.Add(List[i].RB.velocity);//速度保存
-                    List[i].RB.velocity = Vector2.zero;//停止
+                    List[i].RB.velocity = Vector2.zero;
                 }
-                else{
-                    List[i].RB.velocity = IMSpeed[i];//速度登録
+                else{//再生
+                    if (IMSpeed.Count >= 1){//エラー回避
+                        List[i].RB.velocity = IMSpeed[i];//速度登録
+                    }
                 }
             }
 
@@ -54,68 +59,88 @@ public class EnemyMassage : MonoBehaviour {
             if (!value){
                 IMSpeed.Clear();
             }
+
         }
-    }
+    }//一時停止管理変数
 
     public static void ZAjaster(){
         for (int i = 0; i < List.Count; i++){
+            //リストの番号に合わせてｚ座標を調整
             Vector3 Pos = List[i].transform.position;
-            Pos.z = i / 10.0f * Z_PosNum + Z_PosNum;
+            Pos.z = i / zPosRank * Z_PosNum + Z_PosNum;
             List[i].transform.position = Pos;
         }
-    }
+    }//表示位置調整メソッド
 
-    //衝突時処理
     private void OnTriggerEnter2D(Collider2D collision){
         //衝突物によって処理変更
         switch (collision.tag){
             case "Massage"://衝突物：吹き出し
-                //衝突したセリフを破壊
-                PlayerMassage.List.Remove(collision.GetComponent<PlayerMassage>());
-                Destroy(collision.gameObject);
+                //スクリプト取得
+                PlayerMassage PM = collision.GetComponent<PlayerMassage>();
+                PM.Destroyer();
 
                 //Janleによって処理変更
-                MassageAction(collision.GetComponent<PlayerMassage>().ThisJanle);
+                MassageAction(PM.ThisJanle);
                 break;
-            case "Girl":
-                List.Remove(this);
-                ZAjaster();
-                Destroy(this.gameObject);
+
+            case "Girl"://衝突物：少女
+                //自身を破壊
+                Destroyer();
+                
+                //評価
                 Girl.Rated(SetMassageNum, NowJanle);
                 break;
+
             default:
                 break;
         }
-    }
+    }//衝突時処理
 
-    //セリフ接触時アクション
     private void MassageAction(PlayerMassage.Janle PMJ){
+        GameObject CollisionSoundObj;//ＳＥ
+
+        //接触したプレイヤーのセリフの種類で処理切替
         switch (PMJ){
             case PlayerMassage.Janle.Break://接触：こわれろー
-                Instantiate(CollisionSound);
-                List.Remove(this);//リスト解除
-                ZAjaster();
-                Destroy(this.gameObject);
+                //破壊ＳＥ再生
+                CollisionSoundObj = (GameObject)Instantiate(CollisionSound);
+                CollisionSoundObj.GetComponent<CollisionSound>().SetSE(global::CollisionSound.CollisionIs.Destroy);
+
+                //自身を破壊
+                Destroyer();
                 break;
+
             case PlayerMassage.Janle.Bigger://接触：おおきくなれー
                 //最大でなければ大きくする
                 if (NowJanle != Janle.Big){
                     NowJanle++;
+
+                    //状態変化ＳＥ再生
+                    CollisionSoundObj = (GameObject)Instantiate(CollisionSound);
+                    CollisionSoundObj.GetComponent<CollisionSound>().SetSE(global::CollisionSound.CollisionIs.Change);
                 }
                 break;
+
             case PlayerMassage.Janle.Smoler://接触：ちいさくなれ―
                 //最小でなければ小さくする
                 if (NowJanle != Janle.Smole){
                     NowJanle--;
+
+                    //状態変化ＳＥ再生
+                    CollisionSoundObj = (GameObject)Instantiate(CollisionSound);
+                    CollisionSoundObj.GetComponent<CollisionSound>().SetSE(global::CollisionSound.CollisionIs.Change);
                 }
                 break;
+
             default:
                 break;
         }
         MassgeChanger();
-    }
+    }//セリフ接触時アクション
 
     private void MassgeChanger(){
+
         Sprite ChangeSprite = new Sprite();//変更先Sprite
         float ChangeSpeed = new float();//変更先速度
 
@@ -126,64 +151,66 @@ public class EnemyMassage : MonoBehaviour {
                 ChangeSprite = SmoleMassage;
                 ChangeSpeed = Speed.Slow;
                 break;
+
             case Janle.Normal://声量：中
                 ChangeSprite = NormalMassage;
                 ChangeSpeed = Speed.Nomal;
                 break;
+
             case Janle.Big://声量：大
                 ChangeSprite = BigMassage;
                 ChangeSpeed = Speed.Fast;
                 break;
+
             default:
                 break;
         }
 
-        SR.sprite = ChangeSprite;//吹き出し変更
-        RB.velocity = GirlPos * ChangeSpeed;//スピード変更
-    }
+        SR.sprite = ChangeSprite;//吹き出し更新
+        RB.velocity = GirlPos * ChangeSpeed;//スピード更新
+    }//状態変化管理メソッド
 
-    //ゲーム終了時吹き出しを破棄
     public static void GameEnd(){
 
+        //リスト登録済み吹き出しすべて削除
         var AnotherList = List.ToArray();//配列に変換
         foreach (var EM in AnotherList) {
-            EM.CallOutDestroyer();
+            EM.Destroyer();
         }
 
-        Z_PosNum = -1;
-    }
+    }//ゲーム終了処理呼び出しメソッド
 
-    private void CallOutDestroyer(){
+    private void Destroyer(){
+        //自身を削除
         List.Remove(this);
+        ZAjaster();
         Destroy(this.gameObject);
-    }
+    }//ゲーム終了処理
 
     private void Awake(){
-        //transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);//表示位置調整
 
-        //ステータス取得
-        RB = GetComponent<Rigidbody2D>();//RigidBody取得
-        SR = GetComponent<SpriteRenderer>();//SpriteRenderer取得
-        Text = transform.GetChild(0).GetComponent<TextMesh>();//TextMesh取得
+        //ステータス・コンポーネント取得
+        RB = GetComponent<Rigidbody2D>();
+        SR = GetComponent<SpriteRenderer>();
+        Text = transform.GetChild(0).GetComponent<TextMesh>();
         GameObject GirlObj = GameObject.FindWithTag("Girl");
-        Girl = GirlObj.GetComponent<Girl>();//Girlスクリプト取得
-        GirlPos = GirlObj.transform.position - transform.position;//Girlの方向を取得
+        Girl = GirlObj.GetComponent<Girl>();
+        GirlPos = GirlObj.transform.position - transform.position;
 
         List.Add(this);//リストに追加
         ZAjaster();
 
         //吹き出し初期化
         NowJanle = (Janle)Random.Range(0,3);//声量をランダムに決定
-        //セリフをランダムに決定
         while (true){
-            int index = Random.Range(0, MassageList.UseMassage.Length);
-            if(MassageList.UseMassage[index] != 0){//０は使用しない
+            int index = Random.Range(0, MassageList.UseMassage.Length);//セリフをランダムに決定
+            if (MassageList.UseMassage[index] != 0){//０は使用しない
                 SetMassageNum = MassageList.UseMassage[index];//テキストを番号で取得
                 break;
             }
         }
         Text.text = MassageList.Massage[SetMassageNum];//セリフを更新
-        MassgeChanger();
+        MassgeChanger();//テキスト更新
 
     }
 

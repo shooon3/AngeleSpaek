@@ -25,8 +25,6 @@ public class Ootani_para : MonoBehaviour
 
     void Start()
     {
-        Live2D.init();
-
         //　モデルのロード
         live2DModel = Live2DModelUnity.loadModel(mocFile.bytes);
 

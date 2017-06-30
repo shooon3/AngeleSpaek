@@ -4,16 +4,20 @@ using UnityEngine;
 
 public class Roller : MonoBehaviour {
 
-    public float AddRoll;
-    private float NowAddRoll;
+    public float AddRoll;//変化量
+    private float NowRoll;
 	
     void Awake(){
-        NowAddRoll = AddRoll;
+        NowRoll = AddRoll;
     }
     
-    // Update is called once per frame
 	void Update () {
-        transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, transform.rotation.y + NowAddRoll, transform.rotation.z));
-       NowAddRoll += AddRoll;
+        //回転
+        Vector3 NewRotation = new Vector3(transform.rotation.x, transform.rotation.y, transform.rotation.z);
+        NewRotation.y += NowRoll;
+        transform.rotation = Quaternion.Euler(NewRotation);
+
+        //回転量変化
+        NowRoll += AddRoll;
     }
 }

@@ -9,10 +9,8 @@ public class Main : MonoBehaviour {
     public GameState NowState;//現在の状態
     private GameState LastStae;//ステートの最後
 
-    public static bool ShotF = false;//角度変更中か否か判定フラグ
-    public static bool ReturnToTitleF;
-
-    //public int UseMassageNum;//使用するワードの個数
+    public static bool ShotF = false;//角度変更判定フラグ
+    public static bool ReturnToTitleF;//リターンタイトル判定フラグ
 
     //プレファブ一覧
     //タイトル
@@ -79,7 +77,6 @@ public class Main : MonoBehaviour {
     public Sprite GameBack;
     public Sprite ResultBack;
     public Image BackGrandImage;
-
     public Transform Canvas;
 
     //ＢＧＭ
@@ -91,9 +88,6 @@ public class Main : MonoBehaviour {
     public AudioClip OverSound;
     public float SilegntTime;
 
-    //public AudioSource AS;
-
-    //次のステートに進める
     public void NextState(){
         //シーンから不要なものを削除
         ObjDestroyer();
@@ -107,7 +101,7 @@ public class Main : MonoBehaviour {
 
         //シーンに必要なオブジェクトを生成
         ObjInstancer();
-    }
+    }//ステート進行メソッド
 
     private void NextState(GameState GS){
         //シーンで使用したオブジェクトを削除
@@ -116,17 +110,21 @@ public class Main : MonoBehaviour {
         NowState = GS;
         //オブジェクト生成
         ObjInstancer();
-    }
+    }//ステート遷移メソッド
 
     private void ObjInstancer(){
+        //ステートによって生成物切替
         switch (NowState) {
             case GameState.Title:
                 TitleObj = (GameObject)Instantiate(TitlePre, TitlePos, Quaternion.identity);
                 RunAngelObj = (GameObject)Instantiate(RunAngelPre, RunAngelPos, Quaternion.identity);
                 TapToStartObj = (GameObject)Instantiate(TapToStartPre, TTSPos, Quaternion.identity);
+
+                //ＢＧＭ準備
                 BGM.clip = TitleBGM;
                 BGM.loop = true;
                 break;
+
             case GameState.Difficulty:
 
                 //オブジェクト生成
@@ -168,6 +166,7 @@ public class Main : MonoBehaviour {
                 //ＢＧＭ準備
                 BGM.clip = DifficultySelectBGM;
                 break;
+
             case GameState.Game:
                 //オブジェクト生成
                 AngelObj           = (GameObject)Instantiate(AngelPre, AngelPos, Quaternion.identity);
@@ -180,56 +179,67 @@ public class Main : MonoBehaviour {
                 Enemy = OtaniObj.GetComponent<Enemy>();
                 Girl = GirlObj.GetComponent<Girl>();
 
-                //ゲーム準備
-                //UseMassageNum = (UseMassageNum < 1) ? 1 : UseMassageNum;//バグ回避
+                //最初の話題を決定
                 Girl.TalkTitleChange();
+
+                //ＢＧＭ準備
                 BGM.clip = GameBGM;
                 BGM.loop = true;
                 break;
+
             case GameState.Result:
                 RatedTextObj = (GameObject)Instantiate(RatedTextPre, RatedTextPos, Quaternion.identity);
                 RatedTextObj.GetComponent<SpriteRenderer>().sprite = (Girl.NowRated >= Girl.MaxRated) ? ClearSprite : GameOverSprite;
+
+                //ＢＧＭ準備
                 BGM.clip = (Girl.NowRated >= Girl.MaxRated) ? ClearSound : OverSound;
                 BGM.loop = false;
                 break;
+
             default:
                 break;
         }
 
         BackGrandImage.sprite = (NowState == GameState.Result) ? ResultBack : GameBack;//背景変更
-        //BGM.clip = (NowState == GameState.Title) ? TitleBGM : GameBGM;
 
-        Invoke("BGMPlayer", SilegntTime);
-        //BGM.Play();
+        Invoke("BGMPlayer", SilegntTime);//ＢＧＭ再生
 
     }//シーンに必要なオブジェクトを生成
 
     private void ObjDestroyer(){
+        //ステートによって削除オブジェクト切替
         switch (NowState){
             case GameState.Title:
                 Destroy(TitleObj);
                 Destroy(RunAngelObj);
                 Destroy(TapToStartObj);
                 break;
+
             case GameState.Difficulty:
                 Destroy(AddDifficultyButtonObj);
                 Destroy(ReduceDifficultyButtonObj);
                 Destroy(DifficultyNumBoxObj);
                 Destroy(NextStateButtonObj);
                 break;
+
             case GameState.Game:
                 Destroy(AngelObj);
                 Destroy(OtaniObj);
-                //DestroyImmediate(OtaniObj);
                 Destroy(GirlObj);
                 Destroy(RatedHartObj);
+                
+                //吹き出し削除
                 PlayerMassage.GameEnd();
                 EnemyMassage.GameEnd();
                 break;
+
             case GameState.Result:
                 Destroy(RatedTextObj);
+                
+                //フラグ初期化
                 ReturnToTitleF = false;
                 break;
+
             default:
                 break;
         }
@@ -238,7 +248,6 @@ public class Main : MonoBehaviour {
     private void Title(){
         if (Input.GetButtonDown("Fire1")){
             //タップされたら次のシーンへ遷移
-            //AS.Play();
             NextState();
         }
     }//タイトルシーン処理
@@ -251,37 +260,43 @@ public class Main : MonoBehaviour {
             return;
         }
 
-        //指を離すとセリフ発射
-        if (Input.GetButtonUp("Fire1") && ShotF){
-            ShotF = false;
-
-            //フリーズ解除
-            Enemy.AniStop = false;
-            PlayerMassage.IsFreeze = false;
-            EnemyMassage.IsFreeze = false;
-
-            Player.Shot();
-        }
-
-        //ロングタップ開始時角度変更を止める
-        if (Input.GetButtonDown("Fire1")){
-            ShotF = true;
-
-            //フリーズ
-            Enemy.AniStop = true;
-            PlayerMassage.IsFreeze = true;
-            EnemyMassage.IsFreeze = true;
-
-            Player.MassageSet();
-        }
-
+        //角度変更フラグで処理切替
         if (ShotF){
+
             Player.MassageChange();
+
+            //指を離すとセリフ発射
+            if (Input.GetButtonUp("Fire1") && ShotF){
+
+                //フリーズ解除
+                Enemy.AniStop = false;
+                PlayerMassage.IsFreeze = false;
+                EnemyMassage.IsFreeze = false;
+
+                Player.Shot();
+
+                ShotF = false;
+            }
+
         }
         else {
-            Player.DegChanger();
-            Enemy.IsShot();
-            Girl.TalkTitleTimer();
+
+            Player.DegChanger();//角度変更
+            Enemy.IsShot();//大谷君しゃべる
+            Girl.TalkTitleTimer();//女の子話題を変える
+
+            //ロングタップ開始時角度変更を止める
+            if (Input.GetButtonDown("Fire1")){
+                Player.MassageSet();
+
+                //フリーズ
+                Enemy.AniStop = true;
+                PlayerMassage.IsFreeze = true;
+                EnemyMassage.IsFreeze = true;
+
+                ShotF = true;
+            }
+
         }
 
     }//ゲームシーン処理
@@ -293,38 +308,45 @@ public class Main : MonoBehaviour {
         }
     }//リザルトシーン処理
 
+    private void BGMPlayer(){
+        BGM.Play();
+    }
+
     private void Awake(){
-        //タイトルから始まる
+        //タイトルから始める
         NextState(GameState.Title);
 
-        ReturnToTitleF = false;
+        ReturnToTitleF = false;//フラグ初期化
 
         //ステートの最後を取得
         LastStae = (GameState)System.Enum.GetNames(typeof(GameState)).Length;
     }
 
-    private void BGMPlayer(){
-        BGM.Play();
-    }
-
     void Update(){
+        //ステートによって処理切替
         switch (NowState){
             case GameState.Title:
                 Title();
                 break;
+
             case GameState.Difficulty:
+                //ボタン管理
                 break;
+
             case GameState.Game:
                 Game();
                 break;
+
             case GameState.Result:
                 Result();
                 break;
+
             default:
                 //Stateにない値が入っているのは異常なので終了する
                 Application.Quit();
                 break;
         }
+
     }
 
 }
