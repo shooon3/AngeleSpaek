@@ -269,7 +269,7 @@ public class Main : MonoBehaviour {
             if (Input.GetButtonUp("Fire1") && ShotF){
 
                 //フリーズ解除
-                Enemy.AniStop = false;
+                //Enemy.AniStop = false;
                 PlayerMassage.IsFreeze = false;
                 EnemyMassage.IsFreeze = false;
 
@@ -290,7 +290,7 @@ public class Main : MonoBehaviour {
                 Player.MassageSet();
 
                 //フリーズ
-                Enemy.AniStop = true;
+                //Enemy.AniStop = true;
                 PlayerMassage.IsFreeze = true;
                 EnemyMassage.IsFreeze = true;
 
